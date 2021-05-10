@@ -203,41 +203,6 @@ PictureSelector.create(this).externalPictureVideo(video_path);
    limitations under the License.
 ```
 
-## Contact
-Android Group 1 [619458861]() (biggest) <br>
-Android Group 2 [679824206]() (biggest) <br>
-Android Group 3 [854136996]() (biggest) <br>
-QQ [893855882]() <br>
 
-
-## Effect
-
-| Single Mode | Mixed Mode |
-|:-----------:|:-----------:|
-|![](image/home.jpg)|![](image/home_mixed.jpg)| 
-
-| Default Style | Preview | Multiple Crop |
-|:-----------:|:--------:|:---------:|
-|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|  
-
-| Digital Style | Preview | Multiple Crop |
-|:-----------:|:--------:|:---------:|
-|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
-
-| White Style | Preview | Single Crop |
-|:-----------:|:--------:|:---------:|
-|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
-
-| New Style | Preview | Multiple Crop |
-|:-----------:|:--------:|:---------:|
-|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
-
-| Photo Album Directory | Single Mode | Circular Crop|
-|:-----------:|:--------:|:--------:|
-|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
-
-| White Style | Video | Audio |
-|:-----------:|:-----------:|:--------:|
-|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
 
