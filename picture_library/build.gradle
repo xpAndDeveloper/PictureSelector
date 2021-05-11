@@ -43,6 +43,4 @@ dependencies {
     implementation "androidx.camera:camera-view:${cfgs.camerax_view}"
     implementation "androidx.transition:transition:${cfgs.androidx_transition_version}"
     implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
-    //浮窗
-    implementation 'com.github.princekin-f:EasyFloat:2.0.2'
 }

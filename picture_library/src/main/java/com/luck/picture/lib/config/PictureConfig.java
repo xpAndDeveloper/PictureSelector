@@ -19,6 +19,7 @@ public final class PictureConfig {
     public final static String EXTRA_PREVIEW_VIDEO = "isExternalPreviewVideo";
     public final static String EXTRA_PREVIEW_DELETE_POSITION = "position";
     public final static String EXTRA_FC_TAG = "picture";
+    public final static String EXTRA_MDPICTURE_TAG = "mdPicture";
     public final static String EXTRA_RESULT_SELECTION = "extra_result_media";
     public final static String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";
     public final static String EXTRA_SELECT_LIST = "selectList";

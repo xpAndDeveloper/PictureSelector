@@ -54,6 +54,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".MDPhotoFragmentActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SimpleActivity"
             android:screenOrientation="portrait">
             <intent-filter>

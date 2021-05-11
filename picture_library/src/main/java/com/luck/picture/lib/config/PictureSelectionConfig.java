@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 
 import com.luck.picture.lib.R;
@@ -32,7 +33,7 @@ import java.util.List;
  * @describe：PictureSelector Config
  */
 
-public final class PictureSelectionConfig implements Parcelable {
+public final class PictureSelectionConfig implements Parcelable ,Cloneable{
     public int chooseMode = PictureMimeType.ofImage();
     public boolean camera = false;
     public boolean isSingleDirectReturn;
@@ -170,7 +171,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion;
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
-
 
     protected PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
