@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.luck.picture.lib.config.PictureSelectionConfig
 
 class SimpleActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var btn_activity: Button
@@ -25,7 +26,12 @@ class SimpleActivity : AppCompatActivity(), View.OnClickListener {
         when (v.id) {
             R.id.btn_activity -> startActivity(Intent(this@SimpleActivity, MainActivity::class.java))
             R.id.btn_fragment -> startActivity(Intent(this@SimpleActivity, PhotoFragmentActivity::class.java))
-            R.id.btn_mindu -> startActivity(Intent(this@SimpleActivity, MDPhotoFragmentActivity::class.java))
+            R.id.btn_mindu -> {
+                startActivity(Intent(this@SimpleActivity, MDPhotoFragmentActivity::class.java))
+                val windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle
+                overridePendingTransition(
+                        windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in)
+            }
             else -> {
             }
         }

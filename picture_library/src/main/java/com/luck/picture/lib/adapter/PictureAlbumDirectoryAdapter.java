@@ -29,10 +29,12 @@ import java.util.List;
 public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private int chooseMode;
+    private boolean isMD;
 
-    public PictureAlbumDirectoryAdapter(PictureSelectionConfig config) {
+    public PictureAlbumDirectoryAdapter(PictureSelectionConfig config, Boolean isMD) {
         super();
         this.chooseMode = config.chooseMode;
+        this.isMD = isMD;
     }
 
     public void bindFolderData(List<LocalMediaFolder> folders) {
@@ -65,13 +67,17 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        if (PictureSelectionConfig.uiStyle != null) {
-            if (PictureSelectionConfig.uiStyle.picture_album_backgroundStyle != 0) {
-                holder.itemView.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_album_backgroundStyle);
-            }
-        } else if (PictureSelectionConfig.style != null) {
-            if (PictureSelectionConfig.style.pictureAlbumStyle != 0) {
-                holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
+        if (isMD) {
+            holder.itemView.setBackgroundResource(R.color.picture_color_black);
+        }else {
+            if (PictureSelectionConfig.uiStyle != null) {
+                if (PictureSelectionConfig.uiStyle.picture_album_backgroundStyle != 0) {
+                    holder.itemView.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_album_backgroundStyle);
+                }
+            } else if (PictureSelectionConfig.style != null) {
+                if (PictureSelectionConfig.style.pictureAlbumStyle != 0) {
+                    holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
+                }
             }
         }
         if (chooseMode == PictureMimeType.ofAudio()) {
@@ -110,8 +116,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         ImageView ivFirstImage;
         TextView tvFolderName, tvSign;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder( View itemView) {
             super(itemView);
+
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
             tvSign = itemView.findViewById(R.id.tv_sign);

@@ -4,11 +4,10 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/picture_color_white"
-    android:fitsSystemWindows="true"
+    android:background="@color/picture_color_black"
     tools:context="com.luck.picture.lib.PictureSelectorActivity">
 
-    <include layout="@layout/picture_title_bar" />
+    <include layout="@layout/picture_md_title_bar" />
 
     <include layout="@layout/picture_md_bottom_bar" />
 
@@ -18,8 +17,9 @@
         android:layout_height="match_parent"
         android:layout_above="@id/select_bar_layout"
         android:layout_below="@id/titleBar"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
+        android:background="#000"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:overScrollMode="never" />
 
     <TextView

@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.luck.pictureselector.PhotoFragmentActivity">
+    android:fitsSystemWindows="true"
+    android:background="@color/picture_color_black"
+    tools:context="com.luck.pictureselector.MDPhotoFragmentActivity">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
@@ -14,6 +16,7 @@
 
     <net.lucode.hackware.magicindicator.MagicIndicator
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
         android:id="@+id/tab"
         android:layout_width="wrap_content"
         android:layout_height="42dp"

@@ -69,6 +69,7 @@ import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.widget.FolderPopWindow;
+import com.luck.picture.lib.widget.MDFolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
 
@@ -95,13 +96,13 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     protected ImageView mIvArrow;
     protected View mTitleBar;
     protected View viewClickMask;
-    protected TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
+    protected TextView mTvPictureTitle, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
     protected RecyclerPreloadView mRecyclerView;
     protected RelativeLayout mBottomLayout;
     protected PictureImageGridAdapter mAdapter;
-    protected FolderPopWindow folderWindow;
+    protected MDFolderPopWindow folderWindow;
     protected Animation animation = null;
     protected boolean isStartAnimation = false;
     protected MediaPlayer mediaPlayer;
@@ -136,9 +137,9 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         super.onResume();
         if (isEnterSetting) {
             if (PermissionChecker
-                    .checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    .checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) &&
                     PermissionChecker
-                            .checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            .checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (mAdapter.isDataEmpty()) {
                     readLocalMedia();
                 }
@@ -167,7 +168,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         mTitleBar = root.findViewById(R.id.titleBar);
         mIvPictureLeftBack = root.findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = root.findViewById(R.id.picture_title);
-        mTvPictureRight = root.findViewById(R.id.picture_right);
         mTvPictureOk = root.findViewById(R.id.picture_tv_ok);
         mCbOriginal = root.findViewById(R.id.cb_original);
         mIvArrow = root.findViewById(R.id.ivArrow);
@@ -189,7 +189,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
                 && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
-        mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
         viewClickMask.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
@@ -199,11 +198,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                 getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
         mTvPictureTitle.setTag(R.id.view_tag, -1);
-        folderWindow = new FolderPopWindow(getContext());
+        folderWindow = new MDFolderPopWindow(getContext());
         folderWindow.setArrowImageView(mIvArrow);
         folderWindow.setOnAlbumItemClickListener(this);
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount,
-                ScreenUtils.dip2px(getContext(), 2), false));
+                ScreenUtils.dip2px(requireContext(), 5), false));
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount));
         if (!config.isPageStrategy) {
             mRecyclerView.setHasFixedSize(true);
@@ -335,18 +334,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             if (PictureSelectionConfig.uiStyle.picture_top_titleTextSize != 0) {
                 mTvPictureTitle.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleTextSize);
             }
-            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor.length > 0) {
-                ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor);
-                if (colorStateList != null) {
-                    mTvPictureRight.setTextColor(colorStateList);
-                }
-            }
-            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize != 0) {
-                mTvPictureRight.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize);
-            }
-            if (PictureSelectionConfig.uiStyle.picture_top_leftBack != 0) {
-                mIvPictureLeftBack.setImageResource(PictureSelectionConfig.uiStyle.picture_top_leftBack);
-            }
             if (PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor.length > 0) {
                 ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor);
                 if (colorStateList != null) {
@@ -384,9 +371,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             if (PictureSelectionConfig.uiStyle.picture_container_backgroundColor != 0) {
                 container.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_container_backgroundColor);
             }
-            if (PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText != 0) {
-                mTvPictureRight.setText(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText);
-            }
+
             if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) {
                 mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText);
             }
@@ -441,21 +426,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             if (PictureSelectionConfig.style.pictureTitleTextSize != 0) {
                 mTvPictureTitle.setTextSize(PictureSelectionConfig.style.pictureTitleTextSize);
             }
-
-            if (PictureSelectionConfig.style.pictureRightDefaultTextColor != 0) {
-                mTvPictureRight.setTextColor(PictureSelectionConfig.style.pictureRightDefaultTextColor);
-            } else {
-                if (PictureSelectionConfig.style.pictureCancelTextColor != 0) {
-                    mTvPictureRight.setTextColor(PictureSelectionConfig.style.pictureCancelTextColor);
-                }
-            }
-            if (PictureSelectionConfig.style.pictureRightTextSize != 0) {
-                mTvPictureRight.setTextSize(PictureSelectionConfig.style.pictureRightTextSize);
-            }
-
-            if (PictureSelectionConfig.style.pictureLeftBackIcon != 0) {
-                mIvPictureLeftBack.setImageResource(PictureSelectionConfig.style.pictureLeftBackIcon);
-            }
             if (PictureSelectionConfig.style.pictureUnPreviewTextColor != 0) {
                 mTvPicturePreview.setTextColor(PictureSelectionConfig.style.pictureUnPreviewTextColor);
             }
@@ -476,9 +446,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             }
             if (PictureSelectionConfig.style.pictureContainerBackgroundColor != 0) {
                 container.setBackgroundColor(PictureSelectionConfig.style.pictureContainerBackgroundColor);
-            }
-            if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureRightDefaultText)) {
-                mTvPictureRight.setText(PictureSelectionConfig.style.pictureRightDefaultText);
             }
             if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
                 mTvPictureOk.setText(PictureSelectionConfig.style.pictureUnCompleteText);
@@ -519,16 +486,10 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             if (titleColor != 0) {
                 mTvPictureTitle.setTextColor(titleColor);
             }
-            int rightTitleColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_right_textColor);
-            if (rightTitleColor != 0) {
-                mTvPictureRight.setTextColor(rightTitleColor);
-            }
             int containerBackgroundColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_container_backgroundColor);
             if (containerBackgroundColor != 0) {
                 container.setBackgroundColor(containerBackgroundColor);
             }
-            Drawable leftDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_leftBack_icon, R.drawable.picture_icon_back);
-            mIvPictureLeftBack.setImageDrawable(leftDrawable);
 
             if (config.downResId != 0) {
                 Drawable drawable = ContextCompat.getDrawable(getContext(), config.downResId);

@@ -33,7 +33,7 @@ import java.util.List;
  * @describe：文件目录PopupWindow
  */
 
-public class FolderPopWindow extends PopupWindow {
+public class MDFolderPopWindow extends PopupWindow {
     private Context context;
     private View window;
     private RecyclerView mRecyclerView;
@@ -46,7 +46,7 @@ public class FolderPopWindow extends PopupWindow {
     private int maxHeight;
     private View rootViewBg;
 
-    public FolderPopWindow(Context context) {
+    public MDFolderPopWindow(Context context) {
         this.context = context;
         this.config = PictureSelectionConfig.getInstance();
         this.chooseMode = config.chooseMode;
@@ -97,7 +97,8 @@ public class FolderPopWindow extends PopupWindow {
 
     public void initView() {
         rootViewBg = window.findViewById(R.id.rootViewBg);
-        adapter = new PictureAlbumDirectoryAdapter(config,false);
+        rootViewBg.setBackground(ContextCompat.getDrawable(context, R.color.picture_color_black));
+        adapter = new PictureAlbumDirectoryAdapter(config, true);
         mRecyclerView = window.findViewById(R.id.folder_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.setAdapter(adapter);
@@ -146,10 +147,6 @@ public class FolderPopWindow extends PopupWindow {
             isDismiss = false;
             ivArrowView.setImageDrawable(drawableUp);
             AnimUtils.rotateArrow(ivArrowView, true);
-            rootViewBg.animate()
-                    .alpha(1)
-                    .setDuration(250)
-                    .setStartDelay(250).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,14 +161,10 @@ public class FolderPopWindow extends PopupWindow {
         if (isDismiss) {
             return;
         }
-        rootViewBg.animate()
-                .alpha(0)
-                .setDuration(50)
-                .start();
         ivArrowView.setImageDrawable(drawableDown);
         AnimUtils.rotateArrow(ivArrowView, false);
         isDismiss = true;
-        FolderPopWindow.super.dismiss();
+        MDFolderPopWindow.super.dismiss();
         isDismiss = false;
     }
 

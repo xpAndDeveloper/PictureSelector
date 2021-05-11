@@ -414,6 +414,76 @@ public class PictureSelectorUIStyle {
         }
         return uiStyle;
     }
+    /**
+     * Mindu样式
+     *
+     * @return
+     */
+    public static PictureSelectorUIStyle ofMinDuStyle() {
+        PictureSelectorUIStyle uiStyle = new PictureSelectorUIStyle();
+
+        uiStyle.picture_statusBarBackgroundColor = Color.parseColor("#000000");
+        uiStyle.picture_container_backgroundColor = Color.parseColor("#000000");
+
+        uiStyle.picture_navBarColor = Color.parseColor("#000000");
+
+        uiStyle.picture_check_style = R.drawable.picture_checkbox_selector;
+
+        uiStyle.picture_top_leftBack = R.drawable.picture_icon_back;
+        uiStyle.picture_top_titleRightTextColor = new int[]{Color.parseColor("#FFFFFF"), Color.parseColor("#FFFFFF")};
+        uiStyle.picture_top_titleRightTextSize = 14;
+        uiStyle.picture_top_titleTextSize = 18;
+        uiStyle.picture_top_titleArrowUpDrawable = R.drawable.picture_icon_arrow_up;
+        uiStyle.picture_top_titleArrowDownDrawable = R.drawable.picture_icon_arrow_down;
+        uiStyle.picture_top_titleTextColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_top_titleBarBackgroundColor = Color.parseColor("#000000");
+
+        uiStyle.picture_album_textSize = 16;
+        uiStyle.picture_album_backgroundStyle = R.drawable.picture_item_select_bg;
+        uiStyle.picture_album_textColor = Color.parseColor("#ffffff");
+        uiStyle.picture_album_checkDotStyle = R.drawable.picture_orange_oval;
+
+        uiStyle.picture_bottom_previewTextSize = 14;
+        uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
+
+        uiStyle.picture_bottom_completeRedDotTextSize = 12;
+        uiStyle.picture_bottom_completeTextSize = 14;
+        uiStyle.picture_bottom_completeRedDotTextColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_bottom_completeRedDotBackground = R.drawable.picture_num_oval;
+        uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
+        uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#000000");
+
+
+        uiStyle.picture_adapter_item_camera_backgroundColor = Color.parseColor("#999999");
+        uiStyle.picture_adapter_item_camera_textColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_adapter_item_camera_textSize = 14;
+        uiStyle.picture_adapter_item_camera_textTopDrawable = R.drawable.picture_icon_camera;
+
+        uiStyle.picture_adapter_item_textSize = 12;
+        uiStyle.picture_adapter_item_textColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_adapter_item_video_textLeftDrawable = R.drawable.picture_icon_video;
+        uiStyle.picture_adapter_item_audio_textLeftDrawable = R.drawable.picture_icon_audio;
+
+        uiStyle.picture_bottom_originalPictureTextSize = 14;
+        uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_wechat_checkbox;
+        uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
+        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
+        uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
+        uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
+        uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
+        uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
+        uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
+        uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
+        Context appContext = PictureAppMaster.getInstance().getAppContext();
+        if (appContext != null) {
+            uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
+            uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
+            // 如果文本内容设置(%1$d/%2$d)，请开启true
+            uiStyle.isCompleteReplaceNum = true;
+        }
+        return uiStyle;
+    }
 
     /**
      * 0/N样式

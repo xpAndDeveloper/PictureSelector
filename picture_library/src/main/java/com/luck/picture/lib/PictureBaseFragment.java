@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.model.MDLocalMediaPageLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
@@ -86,15 +88,6 @@ public abstract class PictureBaseFragment extends Fragment {
     protected boolean isOnSaveInstanceState;
 
     /**
-     * Whether to use immersion, subclasses copy the method to determine whether to use immersion
-     *
-     * @return
-     */
-    public boolean isImmersive() {
-        return true;
-    }
-
-    /**
      * Whether to change the screen direction
      *
      * @return
@@ -102,15 +95,6 @@ public abstract class PictureBaseFragment extends Fragment {
     public boolean isRequestedOrientation() {
         return true;
     }
-
-
-    public void immersive() {
-        ImmersiveManage.immersiveAboveAPI23((AppCompatActivity) requireActivity()
-                , colorPrimaryDark
-                , colorPrimary
-                , openWhiteStatusBar);
-    }
-
 
     /**
      * get Layout Resources Id
@@ -153,8 +137,14 @@ public abstract class PictureBaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         config = new PictureSelectionConfig();
-        config.initDefaultValue();
+        config.initMinDuValue();
         config.isCamera = false;
+        config.imageSpanCount = 3;
+        config.themeStyleId = R.style.picture_mindu_style;
+        PictureSelectionConfig.uiStyle = PictureSelectorUIStyle.ofMinDuStyle();
+        if (!config.isWeChatStyle) {
+            config.isWeChatStyle = PictureSelectionConfig.uiStyle.isNewSelectStyle;
+        }
         PictureLanguageUtils.setAppLanguage(getContext(), config.language);
 //        setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         super.onCreate(savedInstanceState);
@@ -171,9 +161,7 @@ public abstract class PictureBaseFragment extends Fragment {
         newCreateResultCallbackListener();
 
         initConfig();
-        if (isImmersive()) {
-            immersive();
-        }
+
         if (PictureSelectionConfig.uiStyle != null) {
             if (PictureSelectionConfig.uiStyle.picture_navBarColor != 0) {
                 NavBarUtils.setNavBarColor((AppCompatActivity) requireActivity(), PictureSelectionConfig.uiStyle.picture_navBarColor);

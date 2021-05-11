@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager
 import com.luck.picture.lib.PictureSelectorFragment
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.immersive.ImmersiveManage
 import com.luck.picture.lib.tools.PictureFileUtils
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -33,6 +34,10 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     private lateinit var tabLayout: MagicIndicator
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ImmersiveManage.immersiveAboveAPI23(this
+                , Color.parseColor("#000000")
+                , Color.parseColor("#000000")
+                , false)
         setContentView(R.layout.activity_simp)
         initView()
     }
@@ -50,7 +55,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         }
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tab)
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 1
         viewPager.adapter = initViewPagerAdapter()
         tabLayout.navigator = initCommonNavigator()
         ViewPagerHelper.bind(tabLayout, viewPager)
@@ -80,9 +85,9 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
                 val simplePagerTitleView = SimplePagerTitleView(context)
                 simplePagerTitleView.text = titles[index]
                 simplePagerTitleView.width = UIUtil.dip2px(this@MDPhotoFragmentActivity, 80.0)
-                simplePagerTitleView.textSize = 14f
+                simplePagerTitleView.textSize = 16f
                 simplePagerTitleView.normalColor = Color.parseColor("#999999")
-                simplePagerTitleView.selectedColor = Color.parseColor("#333333")
+                simplePagerTitleView.selectedColor = Color.parseColor("#ffffff")
                 simplePagerTitleView.setOnClickListener {
                     viewPager.currentItem = index
                 }
@@ -95,7 +100,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
 
             override fun getIndicator(context: Context?): IPagerIndicator {
                 val linePagerIndicator = LinePagerIndicator(context)
-                linePagerIndicator.setColors(Color.parseColor("#F54F76"))
+                linePagerIndicator.setColors(Color.parseColor("#ffffff"))
                 linePagerIndicator.mode = LinePagerIndicator.MODE_EXACTLY
                 linePagerIndicator.endInterpolator = DecelerateInterpolator(1.6f)
                 linePagerIndicator.lineWidth = UIUtil.dip2px(context, 24.0).toFloat()

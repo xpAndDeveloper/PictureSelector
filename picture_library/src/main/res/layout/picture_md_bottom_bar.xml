@@ -3,8 +3,9 @@
     android:id="@+id/select_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="45dp"
+    android:visibility="gone"
     android:layout_alignParentBottom="true"
-    android:background="@color/picture_color_grey">
+    android:background="@color/picture_color_black">
 
     <TextView
         android:id="@+id/picture_id_preview"

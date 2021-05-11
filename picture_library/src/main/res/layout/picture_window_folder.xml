@@ -16,6 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="1000dp"
         android:layout_below="@id/folder_list"
-        android:alpha="0"
+        android:alpha="255"
         android:background="@color/picture_color_80" />
 </RelativeLayout>
