@@ -33,7 +33,7 @@ import java.util.List;
  * @describe：PictureSelector Config
  */
 
-public final class PictureSelectionConfig implements Parcelable ,Cloneable{
+public final class PictureSelectionConfig implements Parcelable, Cloneable {
     public int chooseMode = PictureMimeType.ofImage();
     public boolean camera = false;
     public boolean isSingleDirectReturn;
@@ -171,6 +171,12 @@ public final class PictureSelectionConfig implements Parcelable ,Cloneable{
     public boolean isFallbackVersion;
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
+
+    @NonNull
+    @Override
+    public PictureSelectionConfig clone() throws CloneNotSupportedException {
+        return (PictureSelectionConfig) super.clone();
+    }
 
     protected PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
@@ -402,8 +408,8 @@ public final class PictureSelectionConfig implements Parcelable ,Cloneable{
         }
     };
 
-    protected void initDefaultValue() {
-        chooseMode = PictureMimeType.ofImage();
+    public void initDefaultValue() {
+        chooseMode = PictureMimeType.ofAll();
         camera = false;
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;

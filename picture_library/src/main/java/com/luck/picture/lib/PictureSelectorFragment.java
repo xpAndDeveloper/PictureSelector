@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -52,7 +51,7 @@ import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.model.LocalMediaLoader;
-import com.luck.picture.lib.model.LocalMediaPageLoader;
+import com.luck.picture.lib.model.MDLocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
@@ -120,6 +119,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
+
             allFolderSize = savedInstanceState.getInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE);
             oldCurrentListSize = savedInstanceState.getInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, 0);
             List<LocalMedia> cacheData = PictureSelector.obtainSelectorList(savedInstanceState);
@@ -275,7 +275,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             if (isHasMore) {
                 mPage++;
                 long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
-                LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, getPageLimit(),
+                localMediaPageLoader.loadPageMediaData(bucketId, mPage, getPageLimit(),
                         (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             if (!isHidden()) {
                                 this.isHasMore = isHasMore;
@@ -710,7 +710,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     protected void readLocalMedia() {
         showPleaseDialog();
         if (config.isPageStrategy) {
-            LocalMediaPageLoader.getInstance(getContext()).loadAllMedia(
+            localMediaPageLoader.loadAllMedia(
                     (OnQueryDataResultListener<LocalMediaFolder>) (data, currentPage, isHasMore) -> {
                         if (!isHidden()) {
                             this.isHasMore = true;
@@ -723,7 +723,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
                 @Override
                 public List<LocalMediaFolder> doInBackground() {
-                    return new LocalMediaLoader(getContext()).loadAllMedia();
+                    return new LocalMediaLoader(requireContext()).loadAllMedia();
                 }
 
                 @Override
@@ -748,7 +748,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             mTvPictureTitle.setTag(R.id.view_index_tag, 0);
             long bucketId = folder != null ? folder.getBucketId() : -1;
             mRecyclerView.setEnabledLoadMore(true);
-            LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
+            localMediaPageLoader.loadPageMediaData(bucketId, mPage,
                     (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
                         if (!isHidden()) {
                             dismissDialog();
@@ -805,8 +805,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                         if (mediaFolder == null) {
                             continue;
                         }
-                        String firstCover = LocalMediaPageLoader
-                                .getInstance(getContext()).getFirstCover(mediaFolder.getBucketId());
+                        String firstCover = localMediaPageLoader.getFirstCover(mediaFolder.getBucketId());
                         mediaFolder.setFirstImagePath(firstCover);
                     }
                     return true;
@@ -917,7 +916,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                 startCustomCamera();
                 return;
             }
-            config.chooseMode = myConfig;
             switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
                     PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
@@ -947,7 +945,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             Intent intent = new Intent(getContext(), PictureCustomCameraActivity.class);
             startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
             PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
-           getActivity(). overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
+            requireActivity().overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
         } else {
             PermissionChecker
                     .requestPermissions(getActivity(),
@@ -1033,7 +1031,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                 config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
 
-        getActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation,
+        requireActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation,
                 R.anim.picture_anim_fade_in);
     }
 
@@ -1103,7 +1101,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                 PictureSelectionConfig.listener.onResult(result);
             } else {
                 Intent intent = PictureSelector.putIntentResult(result);
-                getActivity().setResult(Activity.RESULT_OK, intent);
+                requireActivity().setResult(Activity.RESULT_OK, intent);
             }
             exit();
             return;
@@ -1403,7 +1401,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                 if (!isCurrentCacheFolderData) {
                     mPage = 1;
                     showPleaseDialog();
-                    LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
+                    localMediaPageLoader.loadPageMediaData(bucketId, mPage,
                             (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                                 this.isHasMore = isHasMore;
                                 if (!isHidden()) {
@@ -1461,11 +1459,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     @Override
     public void onTakePhoto() {
         // Check the permissions
-        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.CAMERA)) {
+        if (PermissionChecker.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)) {
             if (PermissionChecker
-                    .checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    .checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) &&
                     PermissionChecker
-                            .checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            .checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 startCamera();
             } else {
                 PermissionChecker.requestPermissions(getActivity(), new String[]{
@@ -1474,7 +1472,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             }
         } else {
             PermissionChecker
-                    .requestPermissions(getActivity(),
+                    .requestPermissions(requireActivity(),
                             new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
         }
     }
@@ -1657,7 +1655,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             }
         }
     }
-
 
 
     @Override
