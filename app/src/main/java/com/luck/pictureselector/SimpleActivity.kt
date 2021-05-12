@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.luck.picture.lib.MDPhotoFragmentActivity
 import com.luck.picture.lib.config.PictureSelectionConfig
 
 class SimpleActivity : AppCompatActivity(), View.OnClickListener {

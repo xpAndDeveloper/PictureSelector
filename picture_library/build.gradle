@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion cfgs.compileSdkVersion
@@ -44,4 +46,7 @@ dependencies {
     implementation "androidx.transition:transition:${cfgs.androidx_transition_version}"
     implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
 
+    implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+    //订阅框架
+    implementation 'org.greenrobot:eventbus:3.1.1'
 }

@@ -69,4 +69,13 @@ public interface ImageEngine {
      * @param imageView
      */
     void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
+
+    /**
+     * Load picture bottom list picture
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    void loadBottomGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 }

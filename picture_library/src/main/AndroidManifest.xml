@@ -57,7 +57,10 @@
         <activity
             android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
             android:theme="@style/Base.Theme.NoActionBar" />
-
+        <activity
+            android:name=".MDPhotoFragmentActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

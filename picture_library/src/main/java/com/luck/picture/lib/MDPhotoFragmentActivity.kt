@@ -1,21 +1,23 @@
-package com.luck.pictureselector
+package com.luck.picture.lib
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import com.luck.picture.lib.PictureSelectorFragment
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.event.HideBottom
 import com.luck.picture.lib.immersive.ImmersiveManage
 import com.luck.picture.lib.tools.PictureFileUtils
+import com.luck.picture.lib.widget.NoScrollViewPager
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.abs.IPagerNavigator
@@ -26,20 +28,38 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MDPhotoFragmentActivity : AppCompatActivity() {
     private val titles = arrayOf("照片", "视频", "拍视频", "拍照")
     private val fragments = arrayListOf<Fragment>()
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: NoScrollViewPager
     private lateinit var tabLayout: MagicIndicator
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun hideBottomEvent(event: HideBottom?) {
+        if (event != null) {
+            tabLayout.visibility = if (event.isHide) View.GONE else View.VISIBLE
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         ImmersiveManage.immersiveAboveAPI23(this
-                , Color.parseColor("#000000")
-                , Color.parseColor("#000000")
+                , Color.parseColor("#101010")
+                , Color.parseColor("#101010")
                 , false)
-        setContentView(R.layout.activity_simp)
+        setContentView(R.layout.activity_md_photo)
         initView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun initView() {
@@ -55,7 +75,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         }
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tab)
-        viewPager.offscreenPageLimit = 1
+        viewPager.offscreenPageLimit = 4
         viewPager.adapter = initViewPagerAdapter()
         tabLayout.navigator = initCommonNavigator()
         ViewPagerHelper.bind(tabLayout, viewPager)
@@ -111,6 +131,23 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
             }
         }
         return commonNavigator
+    }
+
+    /**
+     * 解决Fragment中的onActivityResult()方法无响应问题。
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        /**
+         * 1.使用getSupportFragmentManager().getFragments()获取到当前Activity中添加的Fragment集合
+         * 2.遍历Fragment集合，手动调用在当前Activity中的Fragment中的onActivityResult()方法。
+         */
+        if (supportFragmentManager.fragments != null && supportFragmentManager.fragments.size > 0) {
+            val fragments = supportFragmentManager.fragments
+            for (mFragment in fragments) {
+                mFragment.onActivityResult(requestCode, resultCode, data)
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

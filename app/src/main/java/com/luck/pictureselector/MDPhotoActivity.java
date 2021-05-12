@@ -17,7 +17,7 @@ public class MDPhotoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simp);
+        setContentView(R.layout.activity_md_photo);
         // 在部分低端手机，调用单独拍照时内存不足时会导致activity被回收，所以不重复创建fragment
         if (savedInstanceState == null) {
             // 添加显示第一个fragment

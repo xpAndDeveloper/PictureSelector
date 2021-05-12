@@ -267,6 +267,37 @@ public class PicassoEngine implements ImageEngine {
         }
     }
 
+    @Override
+    public void loadBottomGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
+        if (PictureMimeType.isContent(url)) {
+            Picasso.get()
+                    .load(Uri.parse(url))
+                    .resize(200, 200)
+                    .centerCrop()
+                    .placeholder(R.drawable.picture_image_placeholder)
+                    .into(imageView);
+        } else {
+            if (PictureMimeType.isUrlHasVideo(url)) {
+                Picasso picasso = new Picasso.Builder(context.getApplicationContext())
+                        .addRequestHandler(videoRequestHandler)
+                        .build();
+                picasso.load(videoRequestHandler.SCHEME_VIDEO + ":" + url)
+                        .resize(200, 200)
+                        .centerCrop()
+                        .placeholder(R.drawable.picture_image_placeholder)
+                        .into(imageView);
+            } else {
+                Picasso.get()
+                        .load(new File(url))
+                        .resize(200, 200)
+                        .centerCrop()
+                        .placeholder(R.drawable.picture_image_placeholder)
+                        .into(imageView);
+            }
+        }
+    }
+
     private PicassoEngine() {
     }
 

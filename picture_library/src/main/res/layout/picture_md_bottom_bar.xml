@@ -1,65 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/select_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:visibility="gone"
+    android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:background="@color/picture_color_black">
+    android:background="@color/picture_color_black"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/picture_id_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="3dp"
-        android:enabled="false"
-        android:gravity="center"
-        android:padding="12dp"
-        android:text="@string/picture_preview"
-        android:textColor="@color/picture_list_text_color"
-        android:textSize="14sp" />
+    <RelativeLayout
+        android:id="@+id/rl1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <CheckBox
-        android:id="@+id/cb_original"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="true"
-        android:background="@color/picture_color_transparent"
-        android:button="@color/picture_color_transparent"
-        android:gravity="center"
-        android:paddingStart="5dp"
-        android:text="@string/picture_original_image"
-        android:textColor="@color/picture_color_53575e"
-        android:textSize="14sp"
-        android:visibility="gone" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:text="@string/picture_des"
+            android:textColor="@color/picture_list_text_color"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginVertical="15dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/selector_shape_f54f76_ff5858_cccccc_22dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/picture_tv_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:gravity="center"
+                android:paddingEnd="5dp"
+                android:text="@string/picture_please_select"
+                android:textColor="@color/picture_color_white"
+                android:textSize="14sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/tv_media_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:text="(0/9)"
+                android:textColor="@color/picture_color_white"
+                android:textSize="12sp" />
 
 
-    <TextView
-        android:id="@+id/picture_tv_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:enabled="false"
-        android:gravity="center"
-        android:paddingEnd="12dp"
-        android:text="@string/picture_please_select"
-        android:textColor="@color/picture_list_text_color"
-        android:textSize="14sp" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_media_num"
-        android:layout_width="wrap_content"
+
+    </RelativeLayout>
+
+    <com.luck.picture.lib.widget.RecyclerPreloadView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp"
-        android:layout_toStartOf="@id/picture_tv_ok"
-        android:background="@drawable/picture_num_oval"
-        android:gravity="center"
-        android:textColor="@color/picture_color_white"
-        android:textSize="12sp"
-        android:visibility="invisible" />
+        android:layout_below="@+id/rl1"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp"
+        android:overScrollMode="never"
+        android:paddingHorizontal="20dp" />
 
 </RelativeLayout>

@@ -207,7 +207,18 @@ public class GlideEngine implements ImageEngine {
                 .load(url)
                 .override(200, 200)
                 .centerCrop()
-                .apply(new RequestOptions().placeholder(R.drawable.picture_image_placeholder))
+                .placeholder(R.drawable.picture_image_placeholder)
+                .into(imageView);
+    }
+
+    @Override
+    public void loadBottomGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .override(200, 200)
+                .centerCrop()
+                .placeholder(R.drawable.picture_image_placeholder)
+                .transform(new GlideRoundTransform(context))
                 .into(imageView);
     }
 

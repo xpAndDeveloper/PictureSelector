@@ -422,8 +422,8 @@ public class PictureSelectorUIStyle {
     public static PictureSelectorUIStyle ofMinDuStyle() {
         PictureSelectorUIStyle uiStyle = new PictureSelectorUIStyle();
 
-        uiStyle.picture_statusBarBackgroundColor = Color.parseColor("#000000");
-        uiStyle.picture_container_backgroundColor = Color.parseColor("#000000");
+        uiStyle.picture_statusBarBackgroundColor = Color.parseColor("#101010");
+        uiStyle.picture_container_backgroundColor = Color.parseColor("#101010");
 
         uiStyle.picture_navBarColor = Color.parseColor("#000000");
 
@@ -436,7 +436,7 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleArrowUpDrawable = R.drawable.picture_icon_arrow_up;
         uiStyle.picture_top_titleArrowDownDrawable = R.drawable.picture_icon_arrow_down;
         uiStyle.picture_top_titleTextColor = Color.parseColor("#FFFFFF");
-        uiStyle.picture_top_titleBarBackgroundColor = Color.parseColor("#000000");
+        uiStyle.picture_top_titleBarBackgroundColor = Color.parseColor("#101010");
 
         uiStyle.picture_album_textSize = 16;
         uiStyle.picture_album_backgroundStyle = R.drawable.picture_item_select_bg;
@@ -446,11 +446,10 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_previewTextSize = 14;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
 
-        uiStyle.picture_bottom_completeRedDotTextSize = 12;
+        uiStyle.picture_bottom_completeRedDotTextSize = 10;
         uiStyle.picture_bottom_completeTextSize = 14;
         uiStyle.picture_bottom_completeRedDotTextColor = Color.parseColor("#FFFFFF");
-        uiStyle.picture_bottom_completeRedDotBackground = R.drawable.picture_num_oval;
-        uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
+        uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#FFFFFF"), Color.parseColor("#FFFFFF")};
         uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#000000");
 
 
@@ -469,8 +468,8 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#FFFFFF");
         uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
         uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
-        uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
-        uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
+        uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_next;
+        uiStyle.picture_bottom_completeNormalText = R.string.picture_please_next;
         uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;

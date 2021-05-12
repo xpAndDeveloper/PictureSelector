@@ -6,9 +6,9 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:background="@color/picture_color_black"
-    tools:context="com.luck.pictureselector.MDPhotoFragmentActivity">
+    tools:context="MDPhotoFragmentActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <com.luck.picture.lib.widget.NoScrollViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
