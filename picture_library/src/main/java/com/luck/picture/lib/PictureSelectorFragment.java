@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -221,8 +222,10 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         mAdapter = new PictureImageGridAdapter(getContext(), config);
         mAdapter.setOnPhotoSelectChangedListener(this);
 
-        mdBottomAdapter = new PictureImageMDBottomAdapter(getContext(), config);
-
+        mdBottomAdapter = new PictureImageMDBottomAdapter(getContext(), new ArrayList(), config);
+        ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        recyclerView.setItemAnimator(null);
         switch (config.animationMode) {
             case AnimationType
                     .ALPHA_IN_ANIMATION:
@@ -1347,7 +1350,25 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     @Override
+    public void onChange(List<LocalMedia> selectData,boolean check, LocalMedia item) {
+        if (check) {
+            mdBottomAdapter.getData().add(item);
+            mdBottomAdapter.notifyItemInserted(mdBottomAdapter.getSize());
+        } else {
+            int position =  mdBottomAdapter.getData().indexOf(item);
+            mdBottomAdapter.getData().remove(item);
+            mdBottomAdapter.notifyItemRemoved(position);
+            mdBottomAdapter.notifyItemRangeChanged(position, mdBottomAdapter.getSize());
+        }
+
+        changeImageNumber(selectData);
+    }
+
+    @Override
     public void onChange(List<LocalMedia> selectData) {
+        mdBottomAdapter.getData().clear();
+        mdBottomAdapter.getData().addAll(selectData);
+        mdBottomAdapter.notifyDataSetChanged();
         changeImageNumber(selectData);
     }
 
@@ -1429,13 +1450,12 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
      *
      * @param selectData
      */
+
     protected void changeImageNumber(List<LocalMedia> selectData) {
         boolean enable = selectData.size() != 0;
         //发送HideBottom
         EventBus.getDefault().post(new HideBottom(enable));
         mBottomLayout.setVisibility(enable ? View.VISIBLE : View.GONE);
-        mdBottomAdapter.bindData(selectData);
-
 
         if (enable) {
             mTvPictureOk.setEnabled(true);

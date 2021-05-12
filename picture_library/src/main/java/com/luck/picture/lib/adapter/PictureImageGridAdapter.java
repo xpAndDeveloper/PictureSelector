@@ -95,7 +95,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public List<LocalMedia> getSelectedData() {
-        return selectData == null ? new ArrayList<>() : selectData;
+        return selectData;
     }
 
     public int getSelectedSize() {
@@ -702,7 +702,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         selectImage(contentHolder, !isChecked);
         if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectData);
+            imageSelectChangedListener.onChange(selectData, !isChecked, image);
         }
     }
 

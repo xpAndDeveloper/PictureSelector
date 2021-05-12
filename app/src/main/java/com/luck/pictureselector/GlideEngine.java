@@ -217,7 +217,7 @@ public class GlideEngine implements ImageEngine {
                 .load(url)
                 .override(200, 200)
                 .centerCrop()
-                .placeholder(R.drawable.picture_image_placeholder)
+                .skipMemoryCache(true)
                 .transform(new GlideRoundTransform(context))
                 .into(imageView);
     }
