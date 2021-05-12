@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.luck.picture.lib.R
@@ -12,16 +13,19 @@ import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.config.PictureSelectionConfig
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.listener.OnMDBottomPhotoSelectChangedListener
 import com.luck.picture.lib.tools.DateUtils
 import com.luck.picture.lib.tools.MediaUtils
-import java.util.*
 
 /**
  * @author：xp
  * @date：20121-5-12 12:02
  * @describe：PictureImageMDBottomAdapter
  */
-class PictureImageMDBottomAdapter(private val context: Context,var data: MutableList<LocalMedia> = arrayListOf(), private val config: PictureSelectionConfig) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PictureImageMDBottomAdapter(private val context: Context
+                                  , var data: MutableList<LocalMedia> = arrayListOf()
+                                  , private val config: PictureSelectionConfig
+                                  , private val onMDBottomPhotoSelectChangedListener: OnMDBottomPhotoSelectChangedListener<LocalMedia>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val isDataEmpty: Boolean
         get() = data.size == 0
@@ -100,6 +104,13 @@ class PictureImageMDBottomAdapter(private val context: Context,var data: Mutable
                 PictureSelectionConfig.imageEngine.loadBottomGridImage(context, path, contentHolder.ivPicture)
             }
         }
+        holder.rlClose.setOnClickListener {
+            val removeItem = data[position]
+            data.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, itemCount)
+            onMDBottomPhotoSelectChangedListener.remove(removeItem)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -113,8 +124,10 @@ class PictureImageMDBottomAdapter(private val context: Context,var data: Mutable
         var tvIsGif: TextView
         var tvLongChart: TextView
         var btnCheck: View
+        var rlClose: RelativeLayout
 
         init {
+            rlClose = contentView.findViewById(R.id.rlClose)
             ivPicture = contentView.findViewById(R.id.ivPicture)
             btnClose = contentView.findViewById(R.id.btnClose)
             btnCheck = contentView.findViewById(R.id.btnCheck)
@@ -148,5 +161,4 @@ class PictureImageMDBottomAdapter(private val context: Context,var data: Mutable
             }
         }
     }
-
 }

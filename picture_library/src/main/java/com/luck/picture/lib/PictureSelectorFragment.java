@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.adapter.PictureImageMDBottomAdapter;
+import com.luck.picture.lib.adapter.PictureImageMDGridAdapter;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
@@ -50,6 +51,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.event.HideBottom;
 import com.luck.picture.lib.listener.OnAlbumItemClickListener;
 import com.luck.picture.lib.listener.OnItemClickListener;
+import com.luck.picture.lib.listener.OnMDBottomPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
@@ -94,7 +96,7 @@ import static androidx.core.content.ContextCompat.getDrawable;
  */
 public class PictureSelectorFragment extends PictureBaseFragment implements View.OnClickListener,
         OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener,
-        OnRecyclerViewPreloadMoreListener {
+        OnRecyclerViewPreloadMoreListener, OnMDBottomPhotoSelectChangedListener<LocalMedia> {
     private static final String TAG = PictureSelectorFragment.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
@@ -106,7 +108,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     protected RecyclerPreloadView mRecyclerView;
     protected RecyclerPreloadView recyclerView;
     protected RelativeLayout mBottomLayout;
-    protected PictureImageGridAdapter mAdapter;
+    protected PictureImageMDGridAdapter mAdapter;
     protected PictureImageMDBottomAdapter mdBottomAdapter;
     protected MDFolderPopWindow folderWindow;
     protected Animation animation = null;
@@ -219,10 +221,10 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                 getString(R.string.picture_audio_empty)
                 : getString(R.string.picture_empty));
         StringUtils.tempTextFont(mTvEmpty, config.chooseMode);
-        mAdapter = new PictureImageGridAdapter(getContext(), config);
+        mAdapter = new PictureImageMDGridAdapter(getContext(), config);
         mAdapter.setOnPhotoSelectChangedListener(this);
 
-        mdBottomAdapter = new PictureImageMDBottomAdapter(getContext(), new ArrayList(), config);
+        mdBottomAdapter = new PictureImageMDBottomAdapter(getContext(), new ArrayList(), config, this);
         ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(null);
@@ -1160,6 +1162,18 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     /**
+     * 底部列表删除
+     *
+     * @param item
+     */
+    @Override
+    public void remove(LocalMedia item) {
+        mAdapter.getSelectedData().remove(item);
+        mAdapter.bindSelectData(mAdapter.getSelectedData());
+        mAdapter.notifyItemChanged(mAdapter.getData().indexOf(item));
+    }
+
+    /**
      * Audio Click
      */
     public class AudioOnClick implements View.OnClickListener {
@@ -1350,12 +1364,12 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectData,boolean check, LocalMedia item) {
+    public void onChange(List<LocalMedia> selectData, boolean check, LocalMedia item) {
         if (check) {
             mdBottomAdapter.getData().add(item);
             mdBottomAdapter.notifyItemInserted(mdBottomAdapter.getSize());
         } else {
-            int position =  mdBottomAdapter.getData().indexOf(item);
+            int position = mdBottomAdapter.getData().indexOf(item);
             mdBottomAdapter.getData().remove(item);
             mdBottomAdapter.notifyItemRemoved(position);
             mdBottomAdapter.notifyItemRangeChanged(position, mdBottomAdapter.getSize());
@@ -1366,9 +1380,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
     @Override
     public void onChange(List<LocalMedia> selectData) {
-        mdBottomAdapter.getData().clear();
-        mdBottomAdapter.getData().addAll(selectData);
-        mdBottomAdapter.notifyDataSetChanged();
+        if (mdBottomAdapter.getData().isEmpty()){
+            mdBottomAdapter.getData().clear();
+            mdBottomAdapter.getData().addAll(selectData);
+            mdBottomAdapter.notifyDataSetChanged();
+        }
         changeImageNumber(selectData);
     }
 

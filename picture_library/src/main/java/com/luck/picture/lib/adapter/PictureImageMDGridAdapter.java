@@ -43,7 +43,7 @@ import java.util.List;
  * @date：2016-12-30 12:02
  * @describe：PictureImageGridAdapter
  */
-public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     private boolean showCamera;
@@ -52,7 +52,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<LocalMedia> selectData = new ArrayList<>();
     private final PictureSelectionConfig config;
 
-    public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
+    public PictureImageMDGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
         this.config = config;
         this.showCamera = config.isCamera;
@@ -95,7 +95,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public List<LocalMedia> getSelectedData() {
-        return selectData == null ? new ArrayList<>() : selectData;
+        return selectData;
     }
 
     public int getSelectedSize() {
@@ -702,7 +702,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         selectImage(contentHolder, !isChecked);
         if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectData);
+            imageSelectChangedListener.onChange(selectData, !isChecked, image);
         }
     }
 
