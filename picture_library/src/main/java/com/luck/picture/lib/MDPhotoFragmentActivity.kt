@@ -144,9 +144,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
          */
         if (supportFragmentManager.fragments != null && supportFragmentManager.fragments.size > 0) {
             val fragments = supportFragmentManager.fragments
-            for (mFragment in fragments) {
-                mFragment.onActivityResult(requestCode, resultCode, data)
-            }
+            fragments[viewPager.currentItem].onActivityResult(requestCode, resultCode, data)
         }
     }
 

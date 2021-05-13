@@ -343,7 +343,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     public void initPictureSelectorStyle() {
         if (PictureSelectionConfig.uiStyle != null) {
             if (PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable != 0) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable);
+                Drawable drawable = ContextCompat.getDrawable(requireContext(), PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable);
                 mIvArrow.setImageDrawable(drawable);
             }
 
@@ -394,7 +394,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
         } else if (PictureSelectionConfig.style != null) {
             if (PictureSelectionConfig.style.pictureTitleDownResId != 0) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), PictureSelectionConfig.style.pictureTitleDownResId);
+                Drawable drawable = ContextCompat.getDrawable(requireContext(), PictureSelectionConfig.style.pictureTitleDownResId);
                 mIvArrow.setImageDrawable(drawable);
             }
             if (PictureSelectionConfig.style.pictureTitleTextColor != 0) {
@@ -439,7 +439,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             }
 
             if (config.downResId != 0) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), config.downResId);
+                Drawable drawable = ContextCompat.getDrawable(requireContext(), config.downResId);
                 mIvArrow.setImageDrawable(drawable);
             } else {
                 Drawable downDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_arrow_down_icon, R.drawable.picture_icon_arrow_down);
@@ -835,7 +835,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
      * Open Custom Camera
      */
     private void startCustomCamera() {
-        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO)) {
+        if (PermissionChecker.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)) {
             Intent intent = new Intent(getContext(), PictureCustomCameraActivity.class);
             startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
             PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
@@ -1472,7 +1472,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
             JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
-            getActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation, R.anim.picture_anim_fade_in);
+            requireActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation, R.anim.picture_anim_fade_in);
         }
     }
 
@@ -2189,7 +2189,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
     public void onBackPressed() {
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            finishAfterTransition(getActivity());
+            finishAfterTransition(requireActivity());
         } else {
             getActivity().onBackPressed();
         }
