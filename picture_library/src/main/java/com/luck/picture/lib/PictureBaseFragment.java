@@ -141,6 +141,7 @@ public abstract class PictureBaseFragment extends Fragment {
         config.isCamera = false;
         config.imageSpanCount = 3;
         config.themeStyleId = R.style.picture_mindu_style;
+        config.isUseCustomCamera = true;
         PictureSelectionConfig.uiStyle = PictureSelectorUIStyle.ofMinDuStyle();
         if (!config.isWeChatStyle) {
             config.isWeChatStyle = PictureSelectionConfig.uiStyle.isNewSelectStyle;

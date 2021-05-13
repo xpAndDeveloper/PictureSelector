@@ -233,9 +233,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
         mdBottomAdapter.enableDragItem(itemTouchHelper, R.id.item, true);
         mdBottomAdapter.setOnItemDragListener(onItemDragListener);
-//        ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-//        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-//        recyclerView.setItemAnimator(null);
+
         switch (config.animationMode) {
             case AnimationType
                     .ALPHA_IN_ANIMATION:

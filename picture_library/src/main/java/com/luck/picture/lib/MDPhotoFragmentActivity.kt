@@ -65,8 +65,8 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     private fun initView() {
         fragments.add(PictureSelectorFragment())
         fragments.add(PictureSelectorFragment())
-        fragments.add(PictureSelectorFragment())
-        fragments.add(PictureSelectorFragment())
+        fragments.add(PictureCustomCameraFragment())
+        fragments.add(PictureCustomCameraFragment())
         fragments[0].arguments = Bundle().apply {
             putInt("chooseMode", PictureMimeType.ofImage())
         }
