@@ -27,7 +27,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -249,13 +248,14 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         }
         recyclerView.setAdapter(mdBottomAdapter);
     }
+
     OnItemDragListener onItemDragListener = new OnItemDragListener() {
         @Override
         public void onItemDragStart(RecyclerView.ViewHolder viewHolder, int pos) {
         }
 
         @Override
-        public void onItemDragMoving(RecyclerView.ViewHolder source, int from,     RecyclerView.ViewHolder target, int to) {
+        public void onItemDragMoving(RecyclerView.ViewHolder source, int from, RecyclerView.ViewHolder target, int to) {
 
         }
 
@@ -264,6 +264,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             mAdapter.bindSelectData(mdBottomAdapter.getData());
         }
     };
+
     @Override
     public void onRecyclerViewPreloadMore() {
         loadMoreData();
@@ -1189,8 +1190,8 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     @Override
     public void remove(LocalMedia item) {
         mAdapter.getSelectedData().remove(item);
-        mAdapter.bindSelectData(mAdapter.getSelectedData());
-        mAdapter.notifyItemChanged(mAdapter.getData().indexOf(item));
+        mAdapter.subSelectPosition();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -1385,22 +1386,18 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
     @Override
     public void onChange(List<LocalMedia> selectData, boolean check, LocalMedia item) {
-        if (check) {
-            mdBottomAdapter.addData(item);
-        } else {
-            int position = mdBottomAdapter.getData().indexOf(item);
-            mdBottomAdapter.remove(position);
-        }
+//        if (check) {
+//            mdBottomAdapter.addData(item);
+//        } else {
+//            int position = mdBottomAdapter.getData().indexOf(item);
+//            mdBottomAdapter.remove(position);
+//        }
         changeImageNumber(selectData);
     }
 
     @Override
     public void onChange(List<LocalMedia> selectData) {
-        if (mdBottomAdapter.getData().isEmpty()){
-            mdBottomAdapter.getData().clear();
-            mdBottomAdapter.getData().addAll(selectData);
-            mdBottomAdapter.notifyDataSetChanged();
-        }
+        mdBottomAdapter.setNewData(selectData);
         changeImageNumber(selectData);
     }
 

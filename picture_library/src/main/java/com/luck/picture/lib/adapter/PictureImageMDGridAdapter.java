@@ -23,7 +23,6 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
-import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -139,7 +138,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             View view = LayoutInflater.from(context).inflate(R.layout.picture_item_camera, parent, false);
             return new CameraViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.picture_image_grid_item, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.picture_md_image_grid_item, parent, false);
             return new ViewHolder(view);
         }
     }
@@ -410,6 +409,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPicture;
+        ImageView mask;
         TextView tvCheck;
         TextView tvDuration, tvIsGif, tvLongChart;
         View contentView;
@@ -419,6 +419,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             super(itemView);
             contentView = itemView;
             ivPicture = itemView.findViewById(R.id.ivPicture);
+            mask = itemView.findViewById(R.id.mask);
             tvCheck = itemView.findViewById(R.id.tvCheck);
             btnCheck = itemView.findViewById(R.id.btnCheck);
             tvDuration = itemView.findViewById(R.id.tv_duration);
@@ -606,7 +607,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                         || media.getId() == image.getId()) {
                     selectData.remove(media);
                     subSelectPosition();
-                    AnimUtils.disZoom(contentHolder.ivPicture, config.zoomAnim);
+//                    AnimUtils.disZoom(contentHolder.ivPicture, config.zoomAnim);
                     break;
                 }
             }
@@ -642,7 +643,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             selectData.add(image);
             image.setNum(selectData.size());
             VoiceUtils.getInstance().play();
-            AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
+//            AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
         }
 
@@ -721,7 +722,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
     /**
      * Update the selection order
      */
-    private void subSelectPosition() {
+    public void subSelectPosition() {
         if (config.checkNumMode) {
             int size = selectData.size();
             for (int index = 0; index < size; index++) {
@@ -741,11 +742,9 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
     public void selectImage(ViewHolder holder, boolean isChecked) {
         holder.tvCheck.setSelected(isChecked);
         if (isChecked) {
-            holder.ivPicture.setColorFilter(ContextCompat.getColor
-                    (context, R.color.picture_color_80), PorterDuff.Mode.SRC_ATOP);
+            holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask));
         } else {
-            holder.ivPicture.setColorFilter(ContextCompat.getColor
-                    (context, R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+            holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def));
         }
     }
 
