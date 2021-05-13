@@ -421,13 +421,13 @@ public class PictureSelectorUIStyle {
      */
     public static PictureSelectorUIStyle ofMinDuStyle() {
         PictureSelectorUIStyle uiStyle = new PictureSelectorUIStyle();
-
+        uiStyle.picture_switchSelectNumberStyle = true;
         uiStyle.picture_statusBarBackgroundColor = Color.parseColor("#101010");
         uiStyle.picture_container_backgroundColor = Color.parseColor("#101010");
 
         uiStyle.picture_navBarColor = Color.parseColor("#000000");
 
-        uiStyle.picture_check_style = R.drawable.picture_checkbox_selector;
+        uiStyle.picture_check_style =  R.drawable.picture_checkbox_md_num_selector;
 
         uiStyle.picture_top_leftBack = R.drawable.picture_icon_back;
         uiStyle.picture_top_titleRightTextColor = new int[]{Color.parseColor("#FFFFFF"), Color.parseColor("#FFFFFF")};

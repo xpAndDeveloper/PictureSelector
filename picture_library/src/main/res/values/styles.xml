@@ -137,7 +137,7 @@
         <!--图片列表勾选样式-->
         <item name="picture.checked.style">@drawable/picture_checkbox_selector</item>
         <!--开启图片列表勾选数字模式-->
-        <item name="picture.style.checkNumMode">false</item>
+        <item name="picture.style.checkNumMode">true</item>
         <!--选择图片样式0/9-->
         <item name="picture.style.numComplete">false</item>
         <!--图片列表底部背景色-->

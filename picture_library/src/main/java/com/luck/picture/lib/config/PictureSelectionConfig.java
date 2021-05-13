@@ -557,7 +557,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         enablePreview = true;
         enPreviewVideo = true;
         enablePreviewAudio = true;
-        checkNumMode = false;
+        checkNumMode = true;
         isNotPreviewDownload = false;
         openClickSound = false;
         isFallbackVersion = false;
@@ -601,7 +601,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         downResId = 0;
         isChangeStatusBarFontColor = false;
         isOpenStyleNumComplete = false;
-        isOpenStyleCheckNumMode = false;
+        isOpenStyleCheckNumMode = true;
         outPutCameraPath = "";
         sizeMultiplier = 0.5f;
         overrideWidth = 0;

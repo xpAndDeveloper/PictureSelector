@@ -30,11 +30,13 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.luck.picture.lib.adapter.PictureImageGridAdapter;
+import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
+import com.chad.library.adapter.base.listener.OnItemDragListener;
 import com.luck.picture.lib.adapter.PictureImageMDBottomAdapter;
 import com.luck.picture.lib.adapter.PictureImageMDGridAdapter;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
@@ -224,10 +226,16 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         mAdapter = new PictureImageMDGridAdapter(getContext(), config);
         mAdapter.setOnPhotoSelectChangedListener(this);
 
-        mdBottomAdapter = new PictureImageMDBottomAdapter(getContext(), new ArrayList(), config, this);
-        ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        recyclerView.setItemAnimator(null);
+        mdBottomAdapter = new PictureImageMDBottomAdapter(requireContext(), new ArrayList(), config, this);
+        ItemDragAndSwipeCallback itemDragAndSwipeCallback = new ItemDragAndSwipeCallback(mdBottomAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemDragAndSwipeCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        mdBottomAdapter.enableDragItem(itemTouchHelper, R.id.item, true);
+        mdBottomAdapter.setOnItemDragListener(onItemDragListener);
+//        ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+//        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+//        recyclerView.setItemAnimator(null);
         switch (config.animationMode) {
             case AnimationType
                     .ALPHA_IN_ANIMATION:
@@ -243,7 +251,21 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         }
         recyclerView.setAdapter(mdBottomAdapter);
     }
+    OnItemDragListener onItemDragListener = new OnItemDragListener() {
+        @Override
+        public void onItemDragStart(RecyclerView.ViewHolder viewHolder, int pos) {
+        }
 
+        @Override
+        public void onItemDragMoving(RecyclerView.ViewHolder source, int from,     RecyclerView.ViewHolder target, int to) {
+
+        }
+
+        @Override
+        public void onItemDragEnd(RecyclerView.ViewHolder viewHolder, int pos) {
+            mAdapter.bindSelectData(mdBottomAdapter.getData());
+        }
+    };
     @Override
     public void onRecyclerViewPreloadMore() {
         loadMoreData();
@@ -1366,15 +1388,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     @Override
     public void onChange(List<LocalMedia> selectData, boolean check, LocalMedia item) {
         if (check) {
-            mdBottomAdapter.getData().add(item);
-            mdBottomAdapter.notifyItemInserted(mdBottomAdapter.getSize());
+            mdBottomAdapter.addData(item);
         } else {
             int position = mdBottomAdapter.getData().indexOf(item);
-            mdBottomAdapter.getData().remove(item);
-            mdBottomAdapter.notifyItemRemoved(position);
-            mdBottomAdapter.notifyItemRangeChanged(position, mdBottomAdapter.getSize());
+            mdBottomAdapter.remove(position);
         }
-
         changeImageNumber(selectData);
     }
 
