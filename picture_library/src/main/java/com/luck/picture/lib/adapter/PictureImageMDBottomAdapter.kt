@@ -76,9 +76,11 @@ class PictureImageMDBottomAdapter(private val context: Context
             }
         }
         helper.setOnClickListener(R.id.rlClose) {
-            val removeItem = item
-            remove(helper.absoluteAdapterPosition)
-            onMDBottomPhotoSelectChangedListener.remove(removeItem)
+            if (helper.absoluteAdapterPosition!=-1) {
+                val removeItem = item
+                remove(helper.absoluteAdapterPosition)
+                onMDBottomPhotoSelectChangedListener.remove(removeItem)
+            }
         }
     }
 
