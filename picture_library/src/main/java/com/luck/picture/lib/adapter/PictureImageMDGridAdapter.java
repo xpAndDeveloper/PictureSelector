@@ -596,7 +596,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
         }
-
+        int removePosition = -1;
         if (isChecked) {
             for (int i = 0; i < count; i++) {
                 LocalMedia media = selectData.get(i);
@@ -605,6 +605,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 }
                 if (media.getPath().equals(image.getPath())
                         || media.getId() == image.getId()) {
+                    removePosition = i;
                     selectData.remove(media);
                     subSelectPosition();
 //                    AnimUtils.disZoom(contentHolder.ivPicture, config.zoomAnim);
@@ -703,7 +704,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
 
         selectImage(contentHolder, !isChecked);
         if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectData, !isChecked, image);
+            imageSelectChangedListener.onChange(selectData, !isChecked, removePosition);
         }
     }
 

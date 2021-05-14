@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
@@ -142,6 +140,7 @@ public abstract class PictureBaseFragment extends Fragment {
         config.imageSpanCount = 3;
         config.themeStyleId = R.style.picture_mindu_style;
         config.isUseCustomCamera = true;
+
         PictureSelectionConfig.uiStyle = PictureSelectorUIStyle.ofMinDuStyle();
         if (!config.isWeChatStyle) {
             config.isWeChatStyle = PictureSelectionConfig.uiStyle.isNewSelectStyle;
@@ -152,6 +151,11 @@ public abstract class PictureBaseFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             config.chooseMode = bundle.getInt("chooseMode", 0);
+            List<LocalMedia> selectionData = bundle.getParcelableArrayList("selectionData");
+            if (selectionData != null && selectionData.size() > 0) {
+                config.selectionMedias = selectionData;
+            }
+
         }
 
 

@@ -1472,7 +1472,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectData,boolean check,LocalMedia item) {
+    public void onChange(List<LocalMedia> selectData,boolean check,int item) {
         changeImageNumber(selectData);
     }
 

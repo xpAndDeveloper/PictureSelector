@@ -1385,13 +1385,10 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectData, boolean check, LocalMedia item) {
-//        if (check) {
-//            mdBottomAdapter.addData(item);
-//        } else {
-//            int position = mdBottomAdapter.getData().indexOf(item);
-//            mdBottomAdapter.remove(position);
-//        }
+    public void onChange(List<LocalMedia> selectData, boolean check, int removePosition) {
+        if (!check){
+            mdBottomAdapter.notifyItemRemoved(removePosition);
+        }
         changeImageNumber(selectData);
     }
 
