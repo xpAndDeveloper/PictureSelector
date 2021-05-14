@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.luck.picture.lib.R
+import com.luck.picture.lib.camera.CustomCameraView
 import com.luck.picture.lib.camera.listener.CaptureListener
 import com.luck.picture.lib.camera.listener.ClickListener
 import com.luck.picture.lib.camera.listener.TypeListener
@@ -29,6 +30,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     private var timer: RecordCountDownTimer? = null  //计时器
     private val duration = 10 * 1000 //录制视频最大时间长度
     private var progress = 0f //录制视频的进度
+    private val min_duration = CustomCameraView.DEFAULT_MIN_RECORD_VIDEO  //最短录制时间限制
 
 
     private val mContext = context
@@ -59,9 +61,12 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
                 if (state == STATE_IDLE) {
                     timer = RecordCountDownTimer(duration.toLong(), (duration / 360).toLong()) //录制定时器
                     captureListener?.recordStart()
+                    timer?.start()
+                    state = STATE_RECORDERING
                 } else if (state == STATE_RECORDERING) {
                     timer?.cancel() //停止计时器
-                    captureListener?.recordEnd(recorded_time.toLong())
+                    if (recorded_time < min_duration) captureListener?.recordShort(recorded_time.toLong()) //回调录制时间过短
+                    else captureListener?.recordEnd(recorded_time.toLong()) //回调录制结束
                     state = STATE_IDLE
                 }
 //                captureListener?.takePictures()
@@ -119,7 +124,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
 
     // 拍照,视频完成保存后
     fun startTypeBtnAnimator() {
-        typeListener?.confirm()
+//        typeListener?.confirm()
     }
 
     fun setCaptureLoadingColor(color: Int) {

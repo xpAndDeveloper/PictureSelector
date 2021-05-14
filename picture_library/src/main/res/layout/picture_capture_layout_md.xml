@@ -12,6 +12,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="64dp"
+        android:visibility="gone"
         android:background="@drawable/picture_round_shape_half_black">
 
         <View
@@ -19,6 +20,22 @@
             android:layout_height="64dp"
             android:layout_gravity="center"
             android:background="@drawable/picture_round_shape_white" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/flVideoRecord"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="64dp"
+        android:background="@drawable/picture_round_oval_white">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/picture_round_shape_half_black" />
 
     </FrameLayout>
 
