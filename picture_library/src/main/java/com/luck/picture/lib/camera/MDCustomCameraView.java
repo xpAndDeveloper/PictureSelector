@@ -37,7 +37,6 @@ import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.ImageCallbackListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
-import com.luck.picture.lib.camera.view.CaptureLayout;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -47,6 +46,7 @@ import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
+import com.luck.picture.lib.camera.view.CaptureLayoutMd;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class MDCustomCameraView extends RelativeLayout {
     private ImageView mImagePreview;
     private ImageView mSwitchCamera;
     private ImageView mFlashLamp;
-    private CaptureLayout mCaptureLayout;
+    private CaptureLayoutMd mCaptureLayout;
     private MediaPlayer mMediaPlayer;
     private TextureView mTextureView;
     private long recordTime = 0;
@@ -115,7 +115,7 @@ public class MDCustomCameraView extends RelativeLayout {
     }
 
     public void initView() {
-        inflate(getContext(), R.layout.picture_camera_view, this);
+        inflate(getContext(), R.layout.picture_camera_view_md, this);
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
         mCameraPreviewView = findViewById(R.id.cameraPreviewView);
         mTextureView = findViewById(R.id.video_play_preview);
@@ -278,13 +278,13 @@ public class MDCustomCameraView extends RelativeLayout {
     private static class MyImageResultCallback implements ImageCapture.OnImageSavedCallback {
         private final WeakReference<File> mFileReference;
         private final WeakReference<ImageView> mImagePreviewReference;
-        private final WeakReference<CaptureLayout> mCaptureLayoutReference;
+        private final WeakReference<CaptureLayoutMd> mCaptureLayoutReference;
         private final WeakReference<ImageCallbackListener> mImageCallbackListenerReference;
         private final WeakReference<CameraListener> mCameraListenerReference;
 
         public MyImageResultCallback(
                 File imageOutFile, ImageView imagePreview,
-                CaptureLayout captureLayout, ImageCallbackListener imageCallbackListener,
+                CaptureLayoutMd captureLayout, ImageCallbackListener imageCallbackListener,
                 CameraListener cameraListener) {
             super();
             this.mFileReference = new WeakReference<>(imageOutFile);
@@ -495,7 +495,7 @@ public class MDCustomCameraView extends RelativeLayout {
         }
     }
 
-    public CaptureLayout getCaptureLayout() {
+    public CaptureLayoutMd getCaptureLayout() {
         return mCaptureLayout;
     }
 

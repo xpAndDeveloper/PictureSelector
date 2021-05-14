@@ -5,11 +5,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,14 +15,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.luck.picture.lib.camera.CustomCameraView;
+import com.luck.picture.lib.camera.MDCustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
-import com.luck.picture.lib.camera.view.CaptureLayout;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.camera.view.CaptureLayoutMd;
 
 import java.io.File;
 
@@ -37,7 +35,7 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
     private final static String TAG = PictureCustomCameraFragment.class.getSimpleName();
 
     private LinearLayout pictureEmpty;
-    private CustomCameraView mCameraView;
+    private MDCustomCameraView mCameraView;
     protected boolean isEnterSetting;
 
     @Override
@@ -77,7 +75,7 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
      */
     private void createCameraView() {
         if (mCameraView == null) {
-            mCameraView = new CustomCameraView(getContext());
+            mCameraView = new MDCustomCameraView(getContext());
             pictureEmpty.addView(mCameraView);
             initView();
         }
@@ -156,7 +154,7 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
             mCameraView.toggleCamera();
         }
         // 获取录制按钮
-        CaptureLayout captureLayout = mCameraView.getCaptureLayout();
+        CaptureLayoutMd captureLayout = mCameraView.getCaptureLayout();
         if (captureLayout != null) {
             captureLayout.setButtonFeatures(config.buttonFeatures);
         }

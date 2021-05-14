@@ -480,7 +480,7 @@ public abstract class PictureBaseFragment extends Fragment {
 
     /**
      * return image result
-     *
+     *  拍照一系列完成的处理回调
      * @param images
      */
     protected void onResult(List<LocalMedia> images) {
