@@ -178,6 +178,9 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         recyclerView = root.findViewById(R.id.recyclerView);
         mBottomLayout = root.findViewById(R.id.select_bar_layout);
         mTvEmpty = root.findViewById(R.id.tv_empty);
+        if (config.chooseMode == PictureMimeType.ofVideo()) {
+            root.findViewById(R.id.bottom_desc).setVisibility(View.GONE);
+        }
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(getContext(), R.anim.picture_anim_modal_in);
@@ -1386,10 +1389,10 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
     @Override
     public void onChange(List<LocalMedia> selectData, boolean check, int position) {
-        if (!check){
+        if (!check) {
             mdBottomAdapter.notifyItemRemoved(position);
-        }else {
-            if (selectData.size()==1){
+        } else {
+            if (selectData.size() == 1) {
                 mdBottomAdapter.notifyDataSetChanged();
             }
         }
