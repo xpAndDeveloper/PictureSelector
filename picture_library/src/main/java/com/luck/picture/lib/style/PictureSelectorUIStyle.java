@@ -441,7 +441,7 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_album_textSize = 16;
         uiStyle.picture_album_backgroundStyle = R.drawable.picture_item_select_bg;
         uiStyle.picture_album_textColor = Color.parseColor("#ffffff");
-        uiStyle.picture_album_checkDotStyle = R.drawable.picture_orange_oval;
+        uiStyle.picture_album_checkDotStyle = R.drawable.picture_num_oval_md;
 
         uiStyle.picture_bottom_previewTextSize = 14;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
+import com.luck.picture.lib.adapter.PictureMDAlbumDirectoryAdapter;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -37,7 +38,7 @@ public class MDFolderPopWindow extends PopupWindow {
     private Context context;
     private View window;
     private RecyclerView mRecyclerView;
-    private PictureAlbumDirectoryAdapter adapter;
+    private PictureMDAlbumDirectoryAdapter adapter;
     private boolean isDismiss = false;
     private ImageView ivArrowView;
     private Drawable drawableUp, drawableDown;
@@ -98,7 +99,7 @@ public class MDFolderPopWindow extends PopupWindow {
     public void initView() {
         rootViewBg = window.findViewById(R.id.rootViewBg);
         rootViewBg.setBackground(ContextCompat.getDrawable(context, R.color.picture_color_black));
-        adapter = new PictureAlbumDirectoryAdapter(config, true);
+        adapter = new PictureMDAlbumDirectoryAdapter(config);
         mRecyclerView = window.findViewById(R.id.folder_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.setAdapter(adapter);

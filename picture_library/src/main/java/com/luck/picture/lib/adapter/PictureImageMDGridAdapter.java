@@ -165,7 +165,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 contentHolder.tvCheck.setVisibility(View.GONE);
                 contentHolder.btnCheck.setVisibility(View.GONE);
             } else {
-                selectImage(contentHolder, isSelected(image));
+                selectImage(contentHolder, isSelected(image), image);
                 contentHolder.tvCheck.setVisibility(View.VISIBLE);
                 contentHolder.btnCheck.setVisibility(View.VISIBLE);
                 // 启用了蒙层效果
@@ -188,31 +188,6 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             if (isHasVideo || PictureMimeType.isHasAudio(mimeType)) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
                 contentHolder.tvDuration.setText(DateUtils.formatDurationTime(image.getDuration()));
-                if (PictureSelectionConfig.uiStyle != null) {
-                    if (isHasVideo) {
-                        if (PictureSelectionConfig.uiStyle.picture_adapter_item_video_textLeftDrawable != 0) {
-                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                    (PictureSelectionConfig.uiStyle.picture_adapter_item_video_textLeftDrawable,
-                                            0, 0, 0);
-                        } else {
-                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                    (R.drawable.picture_icon_video, 0, 0, 0);
-                        }
-                    } else {
-                        if (PictureSelectionConfig.uiStyle.picture_adapter_item_audio_textLeftDrawable != 0) {
-                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                    (PictureSelectionConfig.uiStyle.picture_adapter_item_audio_textLeftDrawable,
-                                            0, 0, 0);
-                        } else {
-                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                    (R.drawable.picture_icon_audio, 0, 0, 0);
-                        }
-                    }
-                } else {
-                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                            (isHasVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
-                                    0, 0, 0);
-                }
             } else {
                 contentHolder.tvDuration.setVisibility(View.GONE);
             }
@@ -300,9 +275,9 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                             showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                             return;
                         }
-                        if (config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+                        if (config.videoSelectMaxSecond > 0 && image.getDuration() > config.videoSelectMaxSecond) {
                             // The length of the video exceeds the specified length
-                            showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                            showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoSelectMaxSecond / 1000));
                             return;
                         }
                     }
@@ -546,8 +521,8 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                     return;
                 }
 
-                if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                if (!isChecked && config.videoSelectMaxSecond > 0 && image.getDuration() > config.videoSelectMaxSecond) {
+                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoSelectMaxSecond / 1000));
                     return;
                 }
             } else {
@@ -574,8 +549,8 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                     return;
                 }
 
-                if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                if (!isChecked && config.videoSelectMaxSecond > 0 && image.getDuration() > config.videoSelectMaxSecond) {
+                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoSelectMaxSecond / 1000));
                     return;
                 }
             } else {
@@ -589,14 +564,14 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                         return;
                     }
 
-                    if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                        showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    if (!isChecked && config.videoSelectMaxSecond > 0 && image.getDuration() > config.videoSelectMaxSecond) {
+                        showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoSelectMaxSecond / 1000));
                         return;
                     }
                 }
             }
         }
-        int removePosition = -1;
+        int position = -1;
         if (isChecked) {
             for (int i = 0; i < count; i++) {
                 LocalMedia media = selectData.get(i);
@@ -605,7 +580,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 }
                 if (media.getPath().equals(image.getPath())
                         || media.getId() == image.getId()) {
-                    removePosition = i;
+                    position = i;
                     selectData.remove(media);
                     subSelectPosition();
 //                    AnimUtils.disZoom(contentHolder.ivPicture, config.zoomAnim);
@@ -642,6 +617,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             }
 
             selectData.add(image);
+            position = selectData.size() - 1;
             image.setNum(selectData.size());
             VoiceUtils.getInstance().play();
 //            AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
@@ -702,9 +678,9 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             notifyItemChanged(contentHolder.getAdapterPosition());
         }
 
-        selectImage(contentHolder, !isChecked);
+        selectImage(contentHolder, !isChecked, image);
         if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectData, !isChecked, removePosition);
+            imageSelectChangedListener.onChange(selectData, !isChecked, position);
         }
     }
 
@@ -739,13 +715,22 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
      *
      * @param holder
      * @param isChecked
+     * @param image
      */
-    public void selectImage(ViewHolder holder, boolean isChecked) {
+    public void selectImage(ViewHolder holder, boolean isChecked, LocalMedia image) {
         holder.tvCheck.setSelected(isChecked);
         if (isChecked) {
             holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask));
         } else {
-            holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def));
+            if (config.chooseMode == PictureMimeType.ofVideo()) {
+                if (config.videoSelectMaxSecond > 0 && image.getDuration() < config.videoSelectMaxSecond) {
+                    holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def));
+                } else {
+                    holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def_50));
+                }
+            } else {
+                holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def));
+            }
         }
     }
 

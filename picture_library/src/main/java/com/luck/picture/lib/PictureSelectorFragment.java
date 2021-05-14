@@ -1385,9 +1385,13 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectData, boolean check, int removePosition) {
+    public void onChange(List<LocalMedia> selectData, boolean check, int position) {
         if (!check){
-            mdBottomAdapter.notifyItemRemoved(removePosition);
+            mdBottomAdapter.notifyItemRemoved(position);
+        }else {
+            if (selectData.size()==1){
+                mdBottomAdapter.notifyDataSetChanged();
+            }
         }
         changeImageNumber(selectData);
     }
@@ -1913,11 +1917,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     private boolean checkVideoLegitimacy(LocalMedia media) {
         boolean isEnterNext = true;
         if (PictureMimeType.isHasVideo(media.getMimeType())) {
-            if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
+            if (config.videoMinSecond > 0 && config.videoSelectMaxSecond > 0) {
                 // The user sets the minimum and maximum video length to determine whether the video is within the interval
-                if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
+                if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoSelectMaxSecond) {
                     isEnterNext = false;
-                    showPromptDialog(getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoSelectMaxSecond / 1000));
                 }
             } else if (config.videoMinSecond > 0) {
                 // The user has only set a minimum video length limit
@@ -1925,11 +1929,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                     isEnterNext = false;
                     showPromptDialog(getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                 }
-            } else if (config.videoMaxSecond > 0) {
+            } else if (config.videoSelectMaxSecond > 0) {
                 // Only the maximum length of video is set
-                if (media.getDuration() > config.videoMaxSecond) {
+                if (media.getDuration() > config.videoSelectMaxSecond) {
                     isEnterNext = false;
-                    showPromptDialog(getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_max_seconds, config.videoSelectMaxSecond / 1000));
                 }
             }
         }

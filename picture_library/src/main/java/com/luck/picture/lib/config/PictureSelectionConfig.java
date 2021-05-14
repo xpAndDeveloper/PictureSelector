@@ -62,7 +62,8 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
     public int minVideoSelectNum = 0;
     public int videoQuality = 1;
     public int cropCompressQuality = 90;
-    public int videoMaxSecond;
+    public int videoMaxSecond;//显示视频最大秒数
+    public int videoSelectMaxSecond;//显示视频最大秒数
     public int videoMinSecond;
     public int recordVideoSecond = 60;
     public int recordVideoMinSecond;
@@ -514,6 +515,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
     }
+
     public void initMinDuValue() {
         chooseMode = PictureMimeType.ofAll();
         camera = false;
@@ -530,6 +532,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         language = -1;
         cropCompressQuality = 90;
         videoMaxSecond = 0;
+        videoSelectMaxSecond = 60 * 1000;
         videoMinSecond = 0;
         filterFileSize = 0;
         filterMaxFileSize = 0;
@@ -547,7 +550,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         isCameraAroundState = false;
         isWithVideoImage = false;
         isAndroidQTransform = false;
-        isCamera = true;
+        isCamera = false;
         isGif = false;
         isWebp = true;
         isBmp = true;
@@ -565,7 +568,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         isFallbackVersion3 = true;
         enableCrop = false;
         isWeChatStyle = false;
-        isUseCustomCamera = false;
+        isUseCustomCamera = true;
         isMultipleSkipCrop = true;
         isMultipleRecyclerAnimation = true;
         freeStyleCropEnabled = false;
