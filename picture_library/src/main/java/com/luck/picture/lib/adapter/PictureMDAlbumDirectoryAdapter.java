@@ -26,15 +26,13 @@ import java.util.List;
  * @date：2016-12-11 17:02
  * @describe：PictureAlbumDirectoryAdapter
  */
-public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
+public class PictureMDAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureMDAlbumDirectoryAdapter.ViewHolder> {
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private int chooseMode;
-    private boolean isMD;
 
-    public PictureAlbumDirectoryAdapter(PictureSelectionConfig config, Boolean isMD) {
+    public PictureMDAlbumDirectoryAdapter(PictureSelectionConfig config) {
         super();
         this.chooseMode = config.chooseMode;
-        this.isMD = isMD;
     }
 
     public void bindFolderData(List<LocalMediaFolder> folders) {
@@ -53,7 +51,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.picture_album_folder_item, parent, false);
+                .inflate(R.layout.picture_md_album_folder_item, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -67,19 +65,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        if (isMD) {
-            holder.itemView.setBackgroundResource(R.color.picture_color_black);
-        }else {
-            if (PictureSelectionConfig.uiStyle != null) {
-                if (PictureSelectionConfig.uiStyle.picture_album_backgroundStyle != 0) {
-                    holder.itemView.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_album_backgroundStyle);
-                }
-            } else if (PictureSelectionConfig.style != null) {
-                if (PictureSelectionConfig.style.pictureAlbumStyle != 0) {
-                    holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
-                }
-            }
-        }
+        holder.itemView.setBackgroundResource(R.color.picture_color_black);
         if (chooseMode == PictureMimeType.ofAudio()) {
             holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
         } else {
@@ -116,7 +102,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         ImageView ivFirstImage;
         TextView tvFolderName, tvSign;
 
-        public ViewHolder( View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
             ivFirstImage = itemView.findViewById(R.id.first_image);
@@ -143,7 +129,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                     tvFolderName.setTextSize(PictureSelectionConfig.style.folderTextSize);
                 }
             } else {
-                Drawable folderCheckedDotDrawable = AttrsUtils.getTypeValueDrawable(itemView.getContext(), R.attr.picture_folder_checked_dot, R.drawable.picture_num_oval_md);
+                Drawable folderCheckedDotDrawable = AttrsUtils.getTypeValueDrawable(itemView.getContext(), R.attr.picture_folder_checked_dot, R.drawable.picture_orange_oval);
                 tvSign.setBackground(folderCheckedDotDrawable);
                 int folderTextColor = AttrsUtils.getTypeValueColor(itemView.getContext(), R.attr.picture_folder_textColor);
                 if (folderTextColor != 0) {

@@ -71,6 +71,17 @@ public final class PictureSelector {
         return new PictureSelectionModel(this, chooseMode);
     }
 
+
+    /**
+     * @param chooseMode Select the type of picture you want，all or Picture or Video .
+     * @return LocalMedia PictureSelectionModel
+     * Use {@link PictureMimeType.ofAll(),ofImage(),ofVideo(),ofAudio()}.
+     */
+    public MDPictureSelectionModel openMdGallery() {
+        return new MDPictureSelectionModel(this);
+    }
+
+
     /**
      * @param chooseMode Select the type of picture you want，Picture or Video.
      * @return LocalMedia PictureSelectionModel

@@ -27,7 +27,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -179,6 +178,9 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         recyclerView = root.findViewById(R.id.recyclerView);
         mBottomLayout = root.findViewById(R.id.select_bar_layout);
         mTvEmpty = root.findViewById(R.id.tv_empty);
+        if (config.chooseMode == PictureMimeType.ofVideo()) {
+            root.findViewById(R.id.bottom_desc).setVisibility(View.GONE);
+        }
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(getContext(), R.anim.picture_anim_modal_in);
@@ -249,13 +251,14 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         }
         recyclerView.setAdapter(mdBottomAdapter);
     }
+
     OnItemDragListener onItemDragListener = new OnItemDragListener() {
         @Override
         public void onItemDragStart(RecyclerView.ViewHolder viewHolder, int pos) {
         }
 
         @Override
-        public void onItemDragMoving(RecyclerView.ViewHolder source, int from,     RecyclerView.ViewHolder target, int to) {
+        public void onItemDragMoving(RecyclerView.ViewHolder source, int from, RecyclerView.ViewHolder target, int to) {
 
         }
 
@@ -264,6 +267,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             mAdapter.bindSelectData(mdBottomAdapter.getData());
         }
     };
+
     @Override
     public void onRecyclerViewPreloadMore() {
         loadMoreData();
@@ -343,7 +347,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     public void initPictureSelectorStyle() {
         if (PictureSelectionConfig.uiStyle != null) {
             if (PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable != 0) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable);
+                Drawable drawable = ContextCompat.getDrawable(requireContext(), PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable);
                 mIvArrow.setImageDrawable(drawable);
             }
 
@@ -394,7 +398,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
         } else if (PictureSelectionConfig.style != null) {
             if (PictureSelectionConfig.style.pictureTitleDownResId != 0) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), PictureSelectionConfig.style.pictureTitleDownResId);
+                Drawable drawable = ContextCompat.getDrawable(requireContext(), PictureSelectionConfig.style.pictureTitleDownResId);
                 mIvArrow.setImageDrawable(drawable);
             }
             if (PictureSelectionConfig.style.pictureTitleTextColor != 0) {
@@ -439,7 +443,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             }
 
             if (config.downResId != 0) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), config.downResId);
+                Drawable drawable = ContextCompat.getDrawable(requireContext(), config.downResId);
                 mIvArrow.setImageDrawable(drawable);
             } else {
                 Drawable downDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_arrow_down_icon, R.drawable.picture_icon_arrow_down);
@@ -835,7 +839,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
      * Open Custom Camera
      */
     private void startCustomCamera() {
-        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO)) {
+        if (PermissionChecker.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)) {
             Intent intent = new Intent(getContext(), PictureCustomCameraActivity.class);
             startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
             PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
@@ -1189,8 +1193,8 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     @Override
     public void remove(LocalMedia item) {
         mAdapter.getSelectedData().remove(item);
-        mAdapter.bindSelectData(mAdapter.getSelectedData());
-        mAdapter.notifyItemChanged(mAdapter.getData().indexOf(item));
+        mAdapter.subSelectPosition();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -1384,23 +1388,20 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectData, boolean check, LocalMedia item) {
-        if (check) {
-            mdBottomAdapter.addData(item);
+    public void onChange(List<LocalMedia> selectData, boolean check, int position) {
+        if (!check) {
+            mdBottomAdapter.notifyItemRemoved(position);
         } else {
-            int position = mdBottomAdapter.getData().indexOf(item);
-            mdBottomAdapter.remove(position);
+            if (selectData.size() == 1) {
+                mdBottomAdapter.notifyDataSetChanged();
+            }
         }
         changeImageNumber(selectData);
     }
 
     @Override
     public void onChange(List<LocalMedia> selectData) {
-        if (mdBottomAdapter.getData().isEmpty()){
-            mdBottomAdapter.getData().clear();
-            mdBottomAdapter.getData().addAll(selectData);
-            mdBottomAdapter.notifyDataSetChanged();
-        }
+        mdBottomAdapter.setNewData(selectData);
         changeImageNumber(selectData);
     }
 
@@ -1472,7 +1473,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
             JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
-            getActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation, R.anim.picture_anim_fade_in);
+            requireActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation, R.anim.picture_anim_fade_in);
         }
     }
 
@@ -1919,11 +1920,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     private boolean checkVideoLegitimacy(LocalMedia media) {
         boolean isEnterNext = true;
         if (PictureMimeType.isHasVideo(media.getMimeType())) {
-            if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
+            if (config.videoMinSecond > 0 && config.videoSelectMaxSecond > 0) {
                 // The user sets the minimum and maximum video length to determine whether the video is within the interval
-                if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
+                if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoSelectMaxSecond) {
                     isEnterNext = false;
-                    showPromptDialog(getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoSelectMaxSecond / 1000));
                 }
             } else if (config.videoMinSecond > 0) {
                 // The user has only set a minimum video length limit
@@ -1931,11 +1932,11 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                     isEnterNext = false;
                     showPromptDialog(getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                 }
-            } else if (config.videoMaxSecond > 0) {
+            } else if (config.videoSelectMaxSecond > 0) {
                 // Only the maximum length of video is set
-                if (media.getDuration() > config.videoMaxSecond) {
+                if (media.getDuration() > config.videoSelectMaxSecond) {
                     isEnterNext = false;
-                    showPromptDialog(getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_max_seconds, config.videoSelectMaxSecond / 1000));
                 }
             }
         }
@@ -2189,7 +2190,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
     public void onBackPressed() {
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            finishAfterTransition(getActivity());
+            finishAfterTransition(requireActivity());
         } else {
             getActivity().onBackPressed();
         }

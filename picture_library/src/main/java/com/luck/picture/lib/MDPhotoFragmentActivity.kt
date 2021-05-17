@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.event.HideBottom
 import com.luck.picture.lib.immersive.ImmersiveManage
 import com.luck.picture.lib.tools.PictureFileUtils
@@ -37,24 +39,34 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     private val fragments = arrayListOf<Fragment>()
     private lateinit var viewPager: NoScrollViewPager
     private lateinit var tabLayout: MagicIndicator
+    private var selectionData = arrayListOf<LocalMedia>()
 
+    private var noChangeNum = 2//前两次不处理
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun hideBottomEvent(event: HideBottom?) {
         if (event != null) {
-            tabLayout.visibility = if (event.isHide) View.GONE else View.VISIBLE
+            if (noChangeNum == 0) {
+                tabLayout.visibility = if (event.isHide) View.GONE else View.VISIBLE
+            } else {
+                noChangeNum--
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        selectionData = intent.getParcelableArrayListExtra<LocalMedia>("selectionMedias")
+                ?: arrayListOf()
         EventBus.getDefault().register(this)
         ImmersiveManage.immersiveAboveAPI23(this
                 , Color.parseColor("#101010")
                 , Color.parseColor("#101010")
                 , false)
         setContentView(R.layout.activity_md_photo)
+        Log.e("LocalMedia", "数据恢复：" + selectionData.size.toString())
         initView()
+        tabLayout.visibility = if (selectionData.isNotEmpty()) View.GONE else View.VISIBLE
     }
 
     override fun onDestroy() {
@@ -69,9 +81,19 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         fragments.add(PictureCustomCameraFragment())
         fragments[0].arguments = Bundle().apply {
             putInt("chooseMode", PictureMimeType.ofImage())
+            if (selectionData.isNotEmpty()) {
+                if (selectionData.first().chooseModel == PictureMimeType.ofImage()) {
+                    putParcelableArrayList("selectionData", selectionData)
+                }
+            }
         }
         fragments[1].arguments = Bundle().apply {
             putInt("chooseMode", PictureMimeType.ofVideo())
+            if (selectionData.isNotEmpty()) {
+                if (selectionData.first().chooseModel == PictureMimeType.ofVideo()) {
+                    putParcelableArrayList("selectionData", selectionData)
+                }
+            }
         }
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tab)
@@ -79,6 +101,16 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         viewPager.adapter = initViewPagerAdapter()
         tabLayout.navigator = initCommonNavigator()
         ViewPagerHelper.bind(tabLayout, viewPager)
+        if (selectionData.isNotEmpty()) {
+            when (selectionData.first().chooseModel) {
+                PictureMimeType.ofImage() -> {
+                    viewPager.currentItem = 0
+                }
+                PictureMimeType.ofVideo() -> {
+                    viewPager.currentItem = 1
+                }
+            }
+        }
 
     }
 
@@ -144,9 +176,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
          */
         if (supportFragmentManager.fragments != null && supportFragmentManager.fragments.size > 0) {
             val fragments = supportFragmentManager.fragments
-            for (mFragment in fragments) {
-                mFragment.onActivityResult(requestCode, resultCode, data)
-            }
+            fragments[viewPager.currentItem].onActivityResult(requestCode, resultCode, data)
         }
     }
 

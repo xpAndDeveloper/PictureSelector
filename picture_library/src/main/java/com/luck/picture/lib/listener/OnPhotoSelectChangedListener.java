@@ -18,7 +18,7 @@ public interface OnPhotoSelectChangedListener<T> {
      *
      * @param data
      */
-    void onChange(List<T> data,boolean check,T item);
+    void onChange(List<T> data,boolean check,int item);
 
     void onChange(List<T> data);
 

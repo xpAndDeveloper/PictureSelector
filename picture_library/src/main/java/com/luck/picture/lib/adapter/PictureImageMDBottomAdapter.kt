@@ -22,7 +22,7 @@ class PictureImageMDBottomAdapter(private val context: Context
                                   , localMedias: MutableList<LocalMedia> = arrayListOf()
                                   , private val config: PictureSelectionConfig
                                   , private val onMDBottomPhotoSelectChangedListener: OnMDBottomPhotoSelectChangedListener<LocalMedia>)
-    : BaseItemDraggableAdapter<LocalMedia, BaseViewHolder>(R.layout.picture_md_image_grid_item, localMedias) {
+    : BaseItemDraggableAdapter<LocalMedia, BaseViewHolder>(R.layout.picture_md_bottom_image_grid_item, localMedias) {
 
     private fun onBindViewHolder(helper: BaseViewHolder, item: LocalMedia) {
         item.position = helper.absoluteAdapterPosition
@@ -76,9 +76,11 @@ class PictureImageMDBottomAdapter(private val context: Context
             }
         }
         helper.setOnClickListener(R.id.rlClose) {
-            val removeItem = item
-            remove(helper.absoluteAdapterPosition)
-            onMDBottomPhotoSelectChangedListener.remove(removeItem)
+            if (helper.absoluteAdapterPosition!=-1) {
+                val removeItem = item
+                remove(helper.absoluteAdapterPosition)
+                onMDBottomPhotoSelectChangedListener.remove(removeItem)
+            }
         }
     }
 
