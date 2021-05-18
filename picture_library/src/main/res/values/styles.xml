@@ -311,4 +311,9 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/ucrop_text_size_controls_text</item>
     </style>
+
+    <style name="ProgressBar_Scale" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:progressDrawable">@drawable/picture_progress_bar_white</item>
+    </style>
 </resources>

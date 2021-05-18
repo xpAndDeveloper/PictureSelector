@@ -283,6 +283,20 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
         dialog.show();
     }
 
+    public void setCameraPreviewIsVideo(boolean isVideo) {
+        if (mCameraView != null) {
+            mCameraView.setCameraPreviewIsVideo(isVideo);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mCameraView != null) {
+            mCameraView.unbindCameraController();
+        }
+        super.onDestroyView();
+    }
+
     @Override
     public void onDestroy() {
         if (mCameraView != null) {

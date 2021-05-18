@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
@@ -42,6 +43,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     private var selectionData = arrayListOf<LocalMedia>()
 
     private var noChangeNum = 2//前两次不处理
+//    private var mCameraFragment: PictureCustomCameraFragment ? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun hideBottomEvent(event: HideBottom?) {
@@ -59,10 +61,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         selectionData = intent.getParcelableArrayListExtra<LocalMedia>("selectionMedias")
                 ?: arrayListOf()
         EventBus.getDefault().register(this)
-        ImmersiveManage.immersiveAboveAPI23(this
-                , Color.parseColor("#101010")
-                , Color.parseColor("#101010")
-                , false)
+        ImmersiveManage.immersiveAboveAPI23(this, Color.parseColor("#101010"), Color.parseColor("#101010"), false)
         setContentView(R.layout.activity_md_photo)
         Log.e("LocalMedia", "数据恢复：" + selectionData.size.toString())
         initView()
@@ -77,7 +76,6 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     private fun initView() {
         fragments.add(PictureSelectorFragment())
         fragments.add(PictureSelectorFragment())
-        fragments.add(PictureCustomCameraFragment())
         fragments.add(PictureCustomCameraFragment())
         fragments[0].arguments = Bundle().apply {
             putInt("chooseMode", PictureMimeType.ofImage())
@@ -97,10 +95,10 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         }
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tab)
-        viewPager.offscreenPageLimit = 4
+        viewPager.offscreenPageLimit = 3
         viewPager.adapter = initViewPagerAdapter()
         tabLayout.navigator = initCommonNavigator()
-        ViewPagerHelper.bind(tabLayout, viewPager)
+//        ViewPagerHelper.bind(tabLayout, viewPager)
         if (selectionData.isNotEmpty()) {
             when (selectionData.first().chooseModel) {
                 PictureMimeType.ofImage() -> {
@@ -111,7 +109,6 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun initViewPagerAdapter(): PagerAdapter? {
@@ -141,7 +138,12 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
                 simplePagerTitleView.normalColor = Color.parseColor("#999999")
                 simplePagerTitleView.selectedColor = Color.parseColor("#ffffff")
                 simplePagerTitleView.setOnClickListener {
-                    viewPager.currentItem = index
+                    tabLayout.onPageSelected(index)
+                    commonNavigator.pagerIndicator.onPageScrolled(index, 0f, 0)
+                    viewPager.currentItem = if (index > 1) 2 else index
+                    if (index > 1 && fragments[2] is PictureCustomCameraFragment){
+                        (fragments[2] as PictureCustomCameraFragment).setCameraPreviewIsVideo(index == 2)
+                    }
                 }
                 return simplePagerTitleView
             }

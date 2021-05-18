@@ -2,6 +2,7 @@ package com.luck.picture.lib.camera;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
@@ -52,6 +53,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import VideoHandle.EpEditor;
+import VideoHandle.EpVideo;
+import VideoHandle.OnEditorListener;
+
 /**
  * @author：luck
  * @date：2020-01-04 13:41
@@ -63,11 +68,11 @@ public class MDCustomCameraView extends RelativeLayout {
      */
     public static final int DEFAULT_MIN_RECORD_VIDEO = 1500;
     /**
-     * 只能拍照
+     * 拍照
      */
     public static final int BUTTON_STATE_ONLY_CAPTURE = 0x101;
     /**
-     * 只能录像
+     * 录像
      */
     public static final int BUTTON_STATE_ONLY_RECORDER = 0x102;
     /**
@@ -98,19 +103,23 @@ public class MDCustomCameraView extends RelativeLayout {
     private TextureView mTextureView;
     private long recordTime = 0;
     private File mOutMediaFile;
+    private Context mContext;
 
     public MDCustomCameraView(Context context) {
         super(context);
+        mContext = context;
         initView();
     }
 
     public MDCustomCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         initView();
     }
 
     public MDCustomCameraView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         initView();
     }
 
@@ -176,6 +185,9 @@ public class MDCustomCameraView extends RelativeLayout {
                         if (recordTime < minSecond && mOutMediaFile.exists() && mOutMediaFile.delete()) {
                             return;
                         }
+                        if (mCameraController.getCameraSelector() == CameraSelector.DEFAULT_FRONT_CAMERA) {
+                            mTextureView.setRotationY(180); // 前置摄像头播放镜像旋转
+                        }
                         mTextureView.setVisibility(View.VISIBLE);
                         mCameraPreviewView.setVisibility(View.INVISIBLE);
                         if (mTextureView.isAvailable()) {
@@ -183,6 +195,40 @@ public class MDCustomCameraView extends RelativeLayout {
                         } else {
                             mTextureView.setSurfaceTextureListener(surfaceTextureListener);
                         }
+//                        File newFile = createVideoFile();
+//                        EpVideo epVideo = new EpVideo(mOutMediaFile.getAbsolutePath());
+//                        epVideo.rotation(0, true);
+//                        EpEditor.OutputOption outputOption = new EpEditor.OutputOption(newFile.getAbsolutePath());
+//                        EpEditor.exec(epVideo, outputOption, new OnEditorListener(){
+//                            @Override
+//                            public void onSuccess() {
+//                                if (mContext instanceof Activity){
+//                                    ((Activity)mContext).runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            mOutMediaFile = newFile;
+//                                            mTextureView.setVisibility(View.VISIBLE);
+//                                            mCameraPreviewView.setVisibility(View.INVISIBLE);
+//                                            if (mTextureView.isAvailable()) {
+//                                                startVideoPlay(mOutMediaFile);
+//                                            } else {
+//                                                mTextureView.setSurfaceTextureListener(surfaceTextureListener);
+//                                            }
+//                                        }
+//                                    });
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure() {
+//
+//                            }
+//
+//                            @Override
+//                            public void onProgress(float progress) {
+//
+//                            }
+//                        });
                     }
 
                     @Override
@@ -561,6 +607,10 @@ public class MDCustomCameraView extends RelativeLayout {
             mMediaPlayer = null;
         }
         mTextureView.setVisibility(View.GONE);
+    }
+
+    public void setCameraPreviewIsVideo(boolean isVideo) {
+        mCaptureLayout.setCameraType(isVideo ? BUTTON_STATE_ONLY_RECORDER : BUTTON_STATE_ONLY_CAPTURE);
     }
 
     public void unbindCameraController() {

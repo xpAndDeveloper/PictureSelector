@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.luck.picture.lib.R
 import com.luck.picture.lib.camera.CustomCameraView
+import com.luck.picture.lib.camera.MDCustomCameraView
 import com.luck.picture.lib.camera.listener.CaptureListener
 import com.luck.picture.lib.camera.listener.ClickListener
 import com.luck.picture.lib.camera.listener.TypeListener
@@ -26,12 +27,14 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     val STATE_LONG_PRESS = 0x003 //长按状态
     val STATE_RECORDERING = 0x004 //录制状态
     val STATE_BAN = 0x005 //禁止状态
+
     private var recorded_time = 0  //记录当前录制的时间
     private var timer: RecordCountDownTimer? = null  //计时器
-    private val duration = 10 * 1000 //录制视频最大时间长度
+    private val duration = 60 * 1000 //录制视频最大时间长度
     private var progress = 0f //录制视频的进度
     private val min_duration = CustomCameraView.DEFAULT_MIN_RECORD_VIDEO  //最短录制时间限制
 
+    private var mCameraType = MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE
 
     private val mContext = context
     private val mView: View = LayoutInflater.from(context).inflate(R.layout.picture_capture_layout_md, this, true)
@@ -51,70 +54,49 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     }
 
     init {
+        state = STATE_IDLE
         initView()
     }
 
     private fun initView() {
-        state = STATE_IDLE
         mView.run {
             flTakePhoto.setOnClickListener {
+                captureListener?.takePictures()
+            }
+            flVideoRecord.setOnClickListener {
                 if (state == STATE_IDLE) {
+                    viewRecordStart.animate().scaleX(0f).scaleY(0f).start()
+                    viewRecording.animate().scaleX(1f).scaleY(1f).start()
                     timer = RecordCountDownTimer(duration.toLong(), (duration / 360).toLong()) //录制定时器
                     captureListener?.recordStart()
                     timer?.start()
                     state = STATE_RECORDERING
                 } else if (state == STATE_RECORDERING) {
-                    timer?.cancel() //停止计时器
-                    if (recorded_time < min_duration) captureListener?.recordShort(recorded_time.toLong()) //回调录制时间过短
-                    else captureListener?.recordEnd(recorded_time.toLong()) //回调录制结束
-                    state = STATE_IDLE
+                   recordEnd()
                 }
-//                captureListener?.takePictures()
-//                captureListener?.recordStart()
-//                captureListener?.recordEnd()
             }
-
-//            btn_capture.setCaptureListener(object : CaptureListener {
-//                override fun takePictures() {
-//                    if (captureListener != null) {
-//                        captureListener!!.takePictures()
-//                    }
-//                    startAlphaAnimation()
-//                }
-//
-//                override fun recordShort(time: Long) {
-//                    if (captureListener != null) {
-//                        captureListener!!.recordShort(time)
-//                    }
-//                }
-//
-//                override fun recordStart() {
-//                    if (captureListener != null) {
-//                        captureListener!!.recordStart()
-//                    }
-//                    startAlphaAnimation()
-//                }
-//
-//                override fun recordEnd(time: Long) {
-//                    if (captureListener != null) {
-//                        captureListener!!.recordEnd(time)
-//                    }
-//                    startTypeBtnAnimator()
-//                }
-//
-//                override fun recordZoom(zoom: Float) {
-//                    if (captureListener != null) {
-//                        captureListener!!.recordZoom(zoom)
-//                    }
-//                }
-//
-//                override fun recordError() {
-//                    if (captureListener != null) {
-//                        captureListener!!.recordError()
-//                    }
-//                }
-//            })
+            tvSave.setOnClickListener {
+                typeListener?.confirm()
+            }
         }
+    }
+
+    private fun initCameraView(){
+        if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
+            flTakePhoto.visibility = View.VISIBLE
+            flVideoRecord.visibility = View.GONE
+            mProgressBar.visibility = View.INVISIBLE
+        } else {
+            flTakePhoto.visibility = View.GONE
+            flVideoRecord.visibility = View.VISIBLE
+            mProgressBar.visibility = View.VISIBLE
+        }
+    }
+
+    fun setCameraType(type: Int){
+        mCameraType = type
+        initCameraView()
+        typeListener?.cancel()
     }
 
 
@@ -124,7 +106,11 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
 
     // 拍照,视频完成保存后
     fun startTypeBtnAnimator() {
-//        typeListener?.confirm()
+        if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
+            typeListener?.confirm()
+        } else {
+            tvSave.visibility = View.VISIBLE
+        }
     }
 
     fun setCaptureLoadingColor(color: Int) {
@@ -167,12 +153,20 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     //更新进度条
     private fun updateProgress(millisUntilFinished: Long) {
         recorded_time = (duration - millisUntilFinished).toInt()
-        progress = 360f - millisUntilFinished / duration.toFloat() * 360f
+        progress = 100f - millisUntilFinished / duration.toFloat() * 100f
+        mProgressBar.progress = progress.toInt()
         invalidate()
     }
 
     private fun recordEnd() {
-
+        if (state == STATE_RECORDERING) {
+            viewRecordStart.animate().scaleX(1f).scaleY(1f).start()
+            viewRecording.animate().scaleX(0f).scaleY(0f).start()
+            timer?.cancel() //停止计时器
+            if (recorded_time < min_duration) captureListener?.recordShort(recorded_time.toLong()) //回调录制时间过短
+            else captureListener?.recordEnd(recorded_time.toLong()) //回调录制结束
+            state = STATE_IDLE
+        }
     }
 
     //录制视频计时器
@@ -182,6 +176,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
         }
 
         override fun onFinish() {
+            mProgressBar.progress = 100
             recordEnd()
         }
     }
