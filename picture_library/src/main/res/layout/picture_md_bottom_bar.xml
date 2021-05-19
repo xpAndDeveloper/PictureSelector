@@ -27,6 +27,7 @@
             android:textSize="14sp" />
 
         <LinearLayout
+            android:id="@+id/ll_next"
             android:layout_width="100dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"

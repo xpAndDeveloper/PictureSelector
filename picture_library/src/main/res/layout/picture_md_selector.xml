@@ -9,7 +9,8 @@
 
     <include layout="@layout/picture_md_title_bar" />
 
-    <include layout="@layout/picture_md_bottom_bar" />
+    <!--    <include layout="@layout/picture_md_bottom_bar" />-->
+
 
     <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/picture_recycler"
@@ -17,11 +18,11 @@
         android:layout_height="match_parent"
         android:layout_above="@id/select_bar_layout"
         android:layout_below="@id/titleBar"
-        android:background="#101010"
-        android:paddingVertical="15dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:overScrollMode="never" />
+        android:background="#101010"
+        android:overScrollMode="never"
+        android:paddingVertical="15dp" />
 
     <TextView
         android:id="@+id/tv_empty"
@@ -36,5 +37,11 @@
         android:textColor="@color/picture_color_aab2bd"
         android:textSize="14sp"
         android:visibility="gone" />
+
+    <com.luck.picture.lib.widget.PictureMdBottomBarView
+        android:id="@+id/picture_bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

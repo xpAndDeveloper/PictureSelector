@@ -19,13 +19,13 @@ import com.chad.library.adapter.base.listener.OnItemDragListener
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.PictureImageMDBottomAdapter
 import com.luck.picture.lib.config.PictureConfig
+import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.config.PictureSelectionConfig
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.event.HideBottom
 import com.luck.picture.lib.listener.OnMDBottomPhotoSelectChangedListener
 import kotlinx.android.synthetic.main.picture_md_bottom_bar.view.*
 import org.greenrobot.eventbus.EventBus
-import java.util.*
 
 /**
  *Created by wanghai
@@ -36,8 +36,9 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
     private val mContext = context
     private val mView: View = LayoutInflater.from(context).inflate(R.layout.picture_md_bottom_bar, this, true)
     private var mdBottomAdapter: PictureImageMDBottomAdapter? = null
-    private var mTvPictureOk: TextView
-    private var mTvPictureImgNum: TextView
+    private lateinit var mTvPictureOk: TextView
+    private lateinit var mTvPictureImgNum: TextView
+    private lateinit var mBottomLayout: RelativeLayout
     private var config: PictureSelectionConfig? = null
     private var mAnimation: Animation? = null
     private var numComplete = false
@@ -49,27 +50,38 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         override fun onItemDragStart(viewHolder: RecyclerView.ViewHolder, pos: Int) {}
         override fun onItemDragMoving(source: RecyclerView.ViewHolder, from: Int, target: RecyclerView.ViewHolder, to: Int) {}
         override fun onItemDragEnd(viewHolder: RecyclerView.ViewHolder, pos: Int) {
-//            mAdapter.bindSelectData(mdBottomAdapter!!.data)
             onPictureListener?.onItemDragEnd(mdBottomAdapter!!.data)
+            if (mdBottomAdapter?.data.isNullOrEmpty()) {
+                //发送HideBottom
+                EventBus.getDefault().post(HideBottom(true))
+                mBottomLayout.visibility = View.GONE
+            }
         }
     }
 
     init {
         mTvPictureOk = mView.findViewById(R.id.picture_tv_ok)
         mTvPictureImgNum = mView.findViewById(R.id.tv_media_num)
+        mBottomLayout = mView.findViewById(R.id.select_bar_layout)
     }
 
-    private fun initView(config: PictureSelectionConfig, numComplete: Boolean = false, isStartAnimation: Boolean = false) {
+    fun initView(config: PictureSelectionConfig, numComplete: Boolean = false, isStartAnimation: Boolean = false) {
         this.numComplete = numComplete
         this.isStartAnimation = isStartAnimation
+        this.config = config
         mView.run {
+            if (config.chooseMode == PictureMimeType.ofVideo()) {
+                mView.findViewById<TextView>(R.id.bottom_desc).visibility = View.GONE
+            }
+
             val dividerItemDecoration = DividerItemDecoration(mContext, RecyclerView.HORIZONTAL)
             dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mContext, R.drawable.item_10)!!)
             recyclerView.addItemDecoration(dividerItemDecoration)
             recyclerView.layoutManager = LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false)
-            mdBottomAdapter = PictureImageMDBottomAdapter(mContext, ArrayList(), config, object : OnMDBottomPhotoSelectChangedListener<LocalMedia> {
-                override fun remove(item: LocalMedia?) {
-
+            mdBottomAdapter = PictureImageMDBottomAdapter(mContext, arrayListOf(), config, OnMDBottomPhotoSelectChangedListener { item ->
+                item?.let {
+                    // 点击 item 的删除按钮
+                    onPictureListener?.onItemRemove(it)
                 }
             })
             val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(mdBottomAdapter)
@@ -78,20 +90,26 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
 
             mdBottomAdapter?.enableDragItem(itemTouchHelper, R.id.item, true)
             mdBottomAdapter?.setOnItemDragListener(onItemDragListener)
+            recyclerView.adapter = mdBottomAdapter
 
             isNumComplete(numComplete)
             if (!numComplete) {
                 mAnimation = AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in)
             }
+            initListener()
         }
     }
 
     private fun initListener() {
-
+        mView.run {
+            ll_next.setOnClickListener {
+                onPictureListener?.onButtonComplete()
+            }
+        }
     }
 
 
-    private fun dataChanged(selectData: List<LocalMedia>, check: Boolean, position: Int) {
+    fun dataChanged(selectData: List<LocalMedia>, check: Boolean, position: Int) {
         if (!check) {
             mdBottomAdapter?.notifyItemRemoved(position)
         } else {
@@ -102,7 +120,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         changeImageNumber(selectData)
     }
 
-    private fun dataChanged(selectData: List<LocalMedia>) {
+    fun dataChanged(selectData: List<LocalMedia>) {
         mdBottomAdapter?.setNewData(selectData)
         changeImageNumber(selectData)
     }
@@ -121,12 +139,12 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
      *
      * @param selectData
      */
-    protected fun changeImageNumber(selectData: List<LocalMedia?>) {
-        mView?.run {
+    private fun changeImageNumber(selectData: List<LocalMedia?>) {
+        mView.run {
             val enable = selectData.size != 0
             //发送HideBottom
             EventBus.getDefault().post(HideBottom(enable))
-//            mBottomLayout.setVisibility(if (enable) VISIBLE else GONE)
+            mBottomLayout.setVisibility(if (enable) VISIBLE else GONE)
             if (enable) {
                 mTvPictureOk.setEnabled(true)
                 mTvPictureOk.setSelected(true)
@@ -192,7 +210,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
     /**
      * init Text
      */
-    protected fun initCompleteText(startCount: Int) {
+    private fun initCompleteText(startCount: Int) {
         if (config?.selectionMode == PictureConfig.SINGLE) {
             if (startCount <= 0) {
                 if (PictureSelectionConfig.uiStyle != null) {
@@ -272,13 +290,31 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         }
     }
 
+    fun getOkTextView(): TextView {
+        return mTvPictureOk
+    }
+
+    fun getNumberTextView(): TextView {
+        return mTvPictureImgNum
+    }
+
+    fun getBottomLayout(): RelativeLayout {
+        return mBottomLayout
+    }
+
     override fun onDetachedFromWindow() {
         mAnimation?.cancel()
         mAnimation = null
         super.onDetachedFromWindow()
     }
 
+    fun updateIsStartAnimation(isStartAnimation: Boolean){
+        this.isStartAnimation = isStartAnimation
+    }
+
     interface OnPictureListener {
         fun onItemDragEnd(data: List<LocalMedia>)
+        fun onButtonComplete()
+        fun onItemRemove(item: LocalMedia)
     }
 }
