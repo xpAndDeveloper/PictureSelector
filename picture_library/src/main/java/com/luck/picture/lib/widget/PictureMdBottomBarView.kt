@@ -51,11 +51,6 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         override fun onItemDragMoving(source: RecyclerView.ViewHolder, from: Int, target: RecyclerView.ViewHolder, to: Int) {}
         override fun onItemDragEnd(viewHolder: RecyclerView.ViewHolder, pos: Int) {
             onPictureListener?.onItemDragEnd(mdBottomAdapter!!.data)
-            if (mdBottomAdapter?.data.isNullOrEmpty()) {
-                //发送HideBottom
-                EventBus.getDefault().post(HideBottom(true))
-                mBottomLayout.visibility = View.GONE
-            }
         }
     }
 
@@ -82,6 +77,11 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                 item?.let {
                     // 点击 item 的删除按钮
                     onPictureListener?.onItemRemove(it)
+                    if (mdBottomAdapter?.data.isNullOrEmpty()) {
+                        //发送HideBottom
+                        EventBus.getDefault().post(HideBottom(false))
+                        mBottomLayout.visibility = View.GONE
+                    }
                 }
             })
             val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(mdBottomAdapter)
@@ -108,6 +108,11 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         }
     }
 
+    fun dataAdd(data: LocalMedia) {
+        if (mdBottomAdapter == null) return
+        mdBottomAdapter?.addData(data)
+        changeImageNumber(mdBottomAdapter!!.data)
+    }
 
     fun dataChanged(selectData: List<LocalMedia>, check: Boolean, position: Int) {
         if (!check) {
@@ -308,7 +313,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         super.onDetachedFromWindow()
     }
 
-    fun updateIsStartAnimation(isStartAnimation: Boolean){
+    fun updateIsStartAnimation(isStartAnimation: Boolean) {
         this.isStartAnimation = isStartAnimation
     }
 

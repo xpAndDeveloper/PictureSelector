@@ -32,6 +32,7 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.widget.PictureMdBottomBarView;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -44,6 +45,7 @@ import java.util.List;
  * @describe：PictureSelectorCameraEmptyActivity
  */
 public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
+    protected PictureMdBottomBarView mPictureBottomView;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -79,6 +81,13 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    protected void initWidgets(View root) {
+        super.initWidgets(root);
+        mPictureBottomView = root.findViewById(R.id.picture_md_view);
+        mPictureBottomView.initView(config, numComplete, true);
+        mPictureBottomView.dataChanged(new ArrayList<>());
+    }
 
     /**
      * 设置个1像素的Activity
@@ -355,19 +364,22 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
      * @param media
      */
     private void dispatchCameraHandleResult(LocalMedia media) {
-        boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
-        if (config.enableCrop && isHasImage) {
-            config.originalPath = config.cameraPath;
-            UCropManager.ofCrop(requireActivity(), config.cameraPath, media.getMimeType());
-        } else if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
-            List<LocalMedia> result = new ArrayList<>();
-            result.add(media);
-            compressImage(result);
-        } else {
-            List<LocalMedia> result = new ArrayList<>();
-            result.add(media);
-            onResult(result);
-        }
+        mPictureBottomView.dataAdd(media);
+
+        //todo 需要这些逻辑
+//        boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
+//        if (config.enableCrop && isHasImage) {
+//            config.originalPath = config.cameraPath;
+//            UCropManager.ofCrop(requireActivity(), config.cameraPath, media.getMimeType());
+//        } else if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
+//            List<LocalMedia> result = new ArrayList<>();
+//            result.add(media);
+//            compressImage(result);
+//        } else {
+//            List<LocalMedia> result = new ArrayList<>();
+//            result.add(media);
+//            onResult(result);
+//        }
     }
 
     @Override

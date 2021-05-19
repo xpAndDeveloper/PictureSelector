@@ -23,8 +23,10 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.camera.view.CaptureLayoutMd;
+import com.luck.picture.lib.widget.PictureMdBottomBarView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -95,6 +97,9 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
     protected void initWidgets(View root) {
         super.initWidgets(root);
         pictureEmpty = root.findViewById(R.id.picture_empty);
+//        mPictureBottomView = root.findViewById(R.id.picture_md_view);
+//        mPictureBottomView.initView(config, numComplete, true);
+//        mPictureBottomView.dataChanged(new ArrayList<>());
     }
 
     @Override
@@ -172,12 +177,13 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
                 intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
-                if (config.camera) {
-                    dispatchHandleCamera(intent);
-                } else {
-                    requireActivity().setResult(Activity.RESULT_OK, intent);
-                    onBackPressed();
-                }
+                dispatchHandleCamera(intent);
+//                if (config.camera) { // 自定义相机
+//                    dispatchHandleCamera(intent);
+//                } else {
+//                    requireActivity().setResult(Activity.RESULT_OK, intent);
+//                    onBackPressed();
+//                }
             }
 
             @Override
@@ -186,12 +192,13 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
                 intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
-                if (config.camera) {
-                    dispatchHandleCamera(intent);
-                } else {
-                    requireActivity().setResult(Activity.RESULT_OK, intent);
-                    onBackPressed();
-                }
+                dispatchHandleCamera(intent);
+//                if (config.camera) { // 自定义相机
+//                    dispatchHandleCamera(intent);
+//                } else {
+//                    requireActivity().setResult(Activity.RESULT_OK, intent);
+//                    onBackPressed();
+//                }
             }
 
             @Override
