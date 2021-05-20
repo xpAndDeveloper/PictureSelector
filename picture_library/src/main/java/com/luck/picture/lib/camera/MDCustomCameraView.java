@@ -33,6 +33,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.luck.picture.lib.PictureMediaScannerConnection;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.camera.controller.MdCameraController;
 import com.luck.picture.lib.camera.listener.CameraListener;
 import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
@@ -68,17 +69,17 @@ public class MDCustomCameraView extends RelativeLayout {
      */
     public static final int DEFAULT_MIN_RECORD_VIDEO = 1500;
     /**
-     * 拍照
+     * 拍照模式
      */
     public static final int BUTTON_STATE_ONLY_CAPTURE = 0x101;
     /**
-     * 录像
+     * 录像模式
      */
     public static final int BUTTON_STATE_ONLY_RECORDER = 0x102;
     /**
      * 两者都可以
      */
-    public static final int BUTTON_STATE_BOTH = 0x103;
+//    public static final int BUTTON_STATE_BOTH = 0x103;
     /**
      * 闪关灯状态
      */
@@ -88,7 +89,7 @@ public class MDCustomCameraView extends RelativeLayout {
     private int type_flash = TYPE_FLASH_OFF;
     private PictureSelectionConfig mConfig;
     private PreviewView mCameraPreviewView;
-    private LifecycleCameraController mCameraController;
+    private MdCameraController mCameraController;
     /**
      * 回调监听
      */
@@ -134,9 +135,10 @@ public class MDCustomCameraView extends RelativeLayout {
         mCaptureLayout = findViewById(R.id.capture_layout);
         mSwitchCamera.setImageResource(R.drawable.picture_ic_camera);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            mCameraController = new LifecycleCameraController(getContext());
-            mCameraController.bindToLifecycle((LifecycleOwner) getContext());
-            mCameraPreviewView.setController(mCameraController);
+//            mCameraController = new LifecycleCameraController(getContext());
+//            mCameraController.bindToLifecycle((LifecycleOwner) getContext());
+//            mCameraPreviewView.setController(mCameraController);
+            mCameraController = new MdCameraController(getContext(), (LifecycleOwner) getContext(), mCameraPreviewView, MdCameraController.CameraModel.IMAGE_MODEL);
         }
         setFlashRes();
         mFlashLamp.setOnClickListener(v -> {
@@ -161,7 +163,8 @@ public class MDCustomCameraView extends RelativeLayout {
                 mCaptureLayout.setButtonCaptureEnabled(false);
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
-                mCameraController.setEnabledUseCases(LifecycleCameraController.IMAGE_CAPTURE);
+//                mCameraController.setEnabledUseCases(LifecycleCameraController.IMAGE_CAPTURE);
+//                mCameraController.setEnabledUseCases(MdCameraController.CameraModel.IMAGE_MODEL);
                 ImageCapture.OutputFileOptions fileOptions =
                         new ImageCapture.OutputFileOptions.Builder(mOutMediaFile)
                                 .build();
@@ -176,7 +179,8 @@ public class MDCustomCameraView extends RelativeLayout {
                 mOutMediaFile = createVideoFile();
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
-                mCameraController.setEnabledUseCases(LifecycleCameraController.VIDEO_CAPTURE);
+//                mCameraController.setEnabledUseCases(LifecycleCameraController.VIDEO_CAPTURE);
+//                mCameraController.setEnabledUseCases(MdCameraController.CameraModel.VIDEO_MODEL);
                 OutputFileOptions fileOptions = OutputFileOptions.builder(mOutMediaFile).build();
                 mCameraController.startRecording(fileOptions, ContextCompat.getMainExecutor(getContext()), new OnVideoSavedCallback() {
                     @Override
@@ -610,6 +614,8 @@ public class MDCustomCameraView extends RelativeLayout {
     }
 
     public void setCameraPreviewIsVideo(boolean isVideo) {
+        if (mCameraController == null) return;
+        mCameraController.setEnabledUseCases(isVideo ? MdCameraController.CameraModel.VIDEO_MODEL : MdCameraController.CameraModel.IMAGE_MODEL);
         mCaptureLayout.setCameraType(isVideo ? BUTTON_STATE_ONLY_RECORDER : BUTTON_STATE_ONLY_CAPTURE);
     }
 

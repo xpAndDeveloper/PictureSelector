@@ -53,4 +53,5 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
     implementation 'com.github.yangjie10930:EpMedia:v1.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 }
