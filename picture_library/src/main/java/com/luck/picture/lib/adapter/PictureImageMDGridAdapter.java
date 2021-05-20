@@ -73,21 +73,34 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
     public void bindData(List<LocalMedia> data) {
         this.data = data == null ? new ArrayList<>() : data;
         this.notifyDataSetChanged();
+        if (imageSelectChangedListener != null) {
+            imageSelectChangedListener.onChange(selectData);
+        }
     }
 
-
     public void bindSelectData(List<LocalMedia> images) {
+        bindSelectData(images, false);
+    }
+
+    public void bindSelectData(List<LocalMedia> images, Boolean isDrag) {
         // 这里重新构构造一个新集合，不然会产生已选集合一变，结果集合也会添加的问题
         List<LocalMedia> selection = new ArrayList<>();
         int size = images.size();
         for (int i = 0; i < size; i++) {
             LocalMedia media = images.get(i);
+            media.setPosition(-1);
             selection.add(media);
+        }
+        for (int j = 0; j < data.size(); j++) {
+            LocalMedia media = data.get(j);
+            if (selection.contains(media)) {
+                selection.get(selection.indexOf(media)).setPosition(j);
+            }
         }
         this.selectData = selection;
         if (!config.isSingleDirectReturn) {
             subSelectPosition();
-            if (imageSelectChangedListener != null) {
+            if (imageSelectChangedListener != null && !isDrag) {
                 imageSelectChangedListener.onChange(selectData);
             }
         }
@@ -680,7 +693,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
 
         selectImage(contentHolder, !isChecked, image);
         if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectData, !isChecked, position);
+            imageSelectChangedListener.onChange(selectData, !isChecked, image);
         }
     }
 

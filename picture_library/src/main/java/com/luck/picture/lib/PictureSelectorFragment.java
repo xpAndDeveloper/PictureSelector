@@ -43,6 +43,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.listener.OnAlbumItemClickListener;
 import com.luck.picture.lib.listener.OnItemClickListener;
+import com.luck.picture.lib.listener.OnMDBottomPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
@@ -86,7 +87,7 @@ import static androidx.core.app.ActivityCompat.finishAfterTransition;
  */
 public class PictureSelectorFragment extends PictureBaseFragment implements View.OnClickListener,
         OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener,
-        OnRecyclerViewPreloadMoreListener{
+        OnRecyclerViewPreloadMoreListener, OnMDBottomPhotoSelectChangedListener<LocalMedia> {
     private static final String TAG = PictureSelectorFragment.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
@@ -95,13 +96,9 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     protected TextView mTvPictureTitle, mTvEmpty, mTvPlayPause, mTvStop, mTvQuit,
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
     protected RecyclerPreloadView mRecyclerView;
-//    protected RecyclerPreloadView recyclerView;
-//    protected RelativeLayout mBottomLayout;
     protected PictureImageMDGridAdapter mAdapter;
-//    protected PictureImageMDBottomAdapter mdBottomAdapter;
     protected PictureMdBottomBarView mPictureBottomView;
     protected MDFolderPopWindow folderWindow;
-//    protected Animation animation = null;
     protected boolean isStartAnimation = false;
     protected MediaPlayer mediaPlayer;
     protected SeekBar musicSeekBar;
@@ -168,7 +165,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         if (config.isAutomaticTitleRecyclerTop) {
             mTitleBar.setOnClickListener(this);
         }
-        if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn){
+        if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
             mPictureBottomView.setVisibility(View.GONE);
         } else {
             mPictureBottomView.setVisibility(View.VISIBLE);
@@ -183,7 +180,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
 
                 @Override
                 public void onItemDragEnd(@NotNull List<? extends LocalMedia> data) {
-                    mAdapter.bindSelectData((List<LocalMedia>) data);
+                    mAdapter.bindSelectData((List<LocalMedia>) data, true);
                 }
 
                 @Override
@@ -200,7 +197,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                 getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
         mTvPictureTitle.setTag(R.id.view_tag, -1);
-        folderWindow = new MDFolderPopWindow(getContext());
+        folderWindow = new MDFolderPopWindow(getContext(), config);
         folderWindow.setArrowImageView(mIvArrow);
         folderWindow.setOnAlbumItemClickListener(this);
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount,
@@ -1042,18 +1039,18 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             e.printStackTrace();
         }
     }
-//
-//    /**
-//     * 底部列表删除
-//     *
-//     * @param item
-//     */
-//    @Override
-//    public void remove(LocalMedia item) {
-//        mAdapter.getSelectedData().remove(item);
-//        mAdapter.subSelectPosition();
-//        mAdapter.notifyDataSetChanged();
-//    }
+
+    /**
+     * 底部列表删除
+     *
+     * @param item
+     */
+    @Override
+    public void remove(LocalMedia item) {
+        mAdapter.getSelectedData().remove(item);
+        mAdapter.subSelectPosition();
+        mAdapter.notifyDataSetChanged();
+    }
 
     /**
      * Audio Click
@@ -1246,8 +1243,8 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectData, boolean check, int position) {
-        mPictureBottomView.dataChanged(selectData, check, position);
+    public void onChange(List<LocalMedia> selectData, boolean check, LocalMedia item) {
+        mPictureBottomView.dataChanged(selectData, check, item);
     }
 
     @Override
@@ -1326,7 +1323,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             requireActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation, R.anim.picture_anim_fade_in);
         }
     }
-
 
 
     @Override
