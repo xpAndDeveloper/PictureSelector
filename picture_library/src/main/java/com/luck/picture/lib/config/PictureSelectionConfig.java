@@ -531,7 +531,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         videoQuality = 1;
         language = -1;
         cropCompressQuality = 90;
-        videoMaxSecond = 0;
+        videoMaxSecond =  60 * 1000;
         videoSelectMaxSecond = 60 * 1000;
         videoMinSecond = 0;
         filterFileSize = 0;
