@@ -51,7 +51,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         override fun onItemDragStart(viewHolder: RecyclerView.ViewHolder, pos: Int) {}
         override fun onItemDragMoving(source: RecyclerView.ViewHolder, from: Int, target: RecyclerView.ViewHolder, to: Int) {}
         override fun onItemDragEnd(viewHolder: RecyclerView.ViewHolder, pos: Int) {
-            onPictureListener?.onItemDragEnd(mdBottomAdapter!!.data)
+            onPictureListener?.onItemDragEnd(mdBottomAdapter?.data ?: arrayListOf())
         }
     }
 
@@ -74,15 +74,11 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
             dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mContext, R.drawable.item_10)!!)
             recyclerView.addItemDecoration(dividerItemDecoration)
             recyclerView.layoutManager = LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false)
-            mdBottomAdapter = PictureImageMDBottomAdapter(mContext, arrayListOf(), config, OnMDBottomPhotoSelectChangedListener { item ->
+            mdBottomAdapter = PictureImageMDBottomAdapter(context = mContext, config = config, onMDBottomPhotoSelectChangedListener = OnMDBottomPhotoSelectChangedListener { item ->
                 item?.let {
                     // 点击 item 的删除按钮
                     onPictureListener?.onItemRemove(it)
-                    if (mdBottomAdapter?.data.isNullOrEmpty()) {
-                        //发送HideBottom
-                        EventBus.getDefault().post(HideBottom(false))
-                        mBottomLayout.visibility = View.GONE
-                    }
+                    changeImageNumber(mdBottomAdapter?.data?: arrayListOf())
                 }
             })
             val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(mdBottomAdapter)
@@ -115,20 +111,32 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
         changeImageNumber(mdBottomAdapter!!.data)
     }
 
-    fun dataChanged(selectData: List<LocalMedia>, check: Boolean, position: Int) {
+
+    fun dataChanged(selectData: List<LocalMedia>, check: Boolean, item: LocalMedia) {
         if (!check) {
-            mdBottomAdapter?.notifyItemRemoved(position)
-        } else {
-            if (selectData.size == 1) {
-                mdBottomAdapter?.notifyDataSetChanged()
+            var removeIndex = -1
+            mdBottomAdapter?.data?.forEachIndexed { index, media ->
+                if (media.path == item.path || media.id == item.id) {
+                    removeIndex = index
+                    return@forEachIndexed
+                }
             }
+            if (removeIndex != -1) {
+                mdBottomAdapter?.remove(removeIndex)
+            }
+        } else {
+            mdBottomAdapter?.addData(item)
         }
-        changeImageNumber(selectData)
+        changeImageNumber(mdBottomAdapter?.data ?: arrayListOf())
     }
 
     fun dataChanged(selectData: List<LocalMedia>) {
-        mdBottomAdapter?.setNewData(selectData)
-        changeImageNumber(selectData)
+        val newSelectData = arrayListOf<LocalMedia>()
+        selectData.forEach {
+            newSelectData.add(it)
+        }
+        mdBottomAdapter?.setNewData(newSelectData)
+        changeImageNumber(newSelectData)
     }
 
     /**
@@ -147,13 +155,13 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
      */
     private fun changeImageNumber(selectData: List<LocalMedia?>) {
         mView.run {
-            val enable = selectData.size != 0
+            val enable = selectData.isNotEmpty()
             //发送HideBottom
             EventBus.getDefault().post(HideBottom(enable))
-            mBottomLayout.setVisibility(if (enable) VISIBLE else GONE)
+            mBottomLayout.visibility = if (enable) VISIBLE else GONE
             if (enable) {
-                mTvPictureOk.setEnabled(true)
-                mTvPictureOk.setSelected(true)
+                mTvPictureOk.isEnabled = true
+                mTvPictureOk.isSelected = true
                 if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.pictureCompleteTextColor != 0) {
                         mTvPictureOk.setTextColor(PictureSelectionConfig.style.pictureCompleteTextColor)
@@ -165,29 +173,29 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                     if (!isStartAnimation) {
                         mTvPictureImgNum.startAnimation(mAnimation)
                     }
-                    mTvPictureImgNum.setVisibility(VISIBLE)
+                    mTvPictureImgNum.visibility = VISIBLE
                     when (config?.chooseMode) {
-                        PictureConfig.TYPE_ALL, PictureConfig.TYPE_IMAGE -> mTvPictureImgNum.setText("(" + selectData.size + "/" + config?.maxSelectNum + ")")
-                        PictureConfig.TYPE_VIDEO -> mTvPictureImgNum.setText("(" + selectData.size + "/" + config?.maxVideoSelectNum + ")")
+                        PictureConfig.TYPE_ALL, PictureConfig.TYPE_IMAGE -> mTvPictureImgNum.text = "(" + selectData.size + "/" + config?.maxSelectNum + ")"
+                        PictureConfig.TYPE_VIDEO -> mTvPictureImgNum.text = "(" + selectData.size + "/" + config?.maxVideoSelectNum + ")"
                         else -> {
                         }
                     }
                     if (PictureSelectionConfig.uiStyle != null) {
                         if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
-                            mTvPictureOk.setText(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText))
+                            mTvPictureOk.text = mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)
                         }
                     } else if (PictureSelectionConfig.style != null) {
                         if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
-                            mTvPictureOk.setText(PictureSelectionConfig.style.pictureCompleteText)
+                            mTvPictureOk.text = PictureSelectionConfig.style.pictureCompleteText
                         }
                     } else {
-                        mTvPictureOk.setText(mContext.getString(R.string.picture_please_next))
+                        mTvPictureOk.text = mContext.getString(R.string.picture_please_next)
                     }
                     isStartAnimation = false
                 }
             } else {
-                mTvPictureOk.setEnabled(config?.returnEmpty ?: false)
-                mTvPictureOk.setSelected(false)
+                mTvPictureOk.isEnabled = config?.returnEmpty ?: false
+                mTvPictureOk.isSelected = false
                 if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.pictureUnCompleteTextColor != 0) {
                         mTvPictureOk.setTextColor(PictureSelectionConfig.style.pictureUnCompleteTextColor)
@@ -196,17 +204,17 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                 if (numComplete) {
                     initCompleteText(selectData.size)
                 } else {
-                    mTvPictureImgNum.setVisibility(INVISIBLE)
+                    mTvPictureImgNum.visibility = INVISIBLE
                     if (PictureSelectionConfig.uiStyle != null) {
                         if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) {
-                            mTvPictureOk.setText(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText))
+                            mTvPictureOk.text = mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
                         }
                     } else if (PictureSelectionConfig.style != null) {
                         if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
-                            mTvPictureOk.setText(PictureSelectionConfig.style.pictureUnCompleteText)
+                            mTvPictureOk.text = PictureSelectionConfig.style.pictureUnCompleteText
                         }
                     } else {
-                        mTvPictureOk.setText(mContext.getString(R.string.picture_please_next))
+                        mTvPictureOk.text = mContext.getString(R.string.picture_please_next)
                     }
                 }
             }
@@ -223,7 +231,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
                         mTvPictureOk.text = if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) String.format(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText), startCount, 1) else mContext.getString(R.string.picture_please_next)
                     } else {
-                        mTvPictureOk.setText(if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) else mContext.getString(R.string.picture_please_next))
+                        mTvPictureOk.text = if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) else mContext.getString(R.string.picture_please_next)
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
@@ -237,7 +245,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
                         mTvPictureOk.text = if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) String.format(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText), startCount, 1) else mContext.getString(R.string.picture_done)
                     } else {
-                        mTvPictureOk.setText(if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText) else mContext.getString(R.string.picture_done))
+                        mTvPictureOk.text = if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText) else mContext.getString(R.string.picture_done)
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
@@ -253,7 +261,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
                         mTvPictureOk.text = if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) String.format(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText), startCount, config?.maxSelectNum) else mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum)
                     } else {
-                        mTvPictureOk.setText(if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) else mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum))
+                        mTvPictureOk.text = if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) else mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum)
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.isCompleteReplaceNum) {
@@ -268,13 +276,13 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                         if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
                             mTvPictureOk.text = String.format(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText), startCount, config?.maxSelectNum)
                         } else {
-                            mTvPictureOk.setText(mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum))
+                            mTvPictureOk.text = mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum)
                         }
                     } else {
                         if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
-                            mTvPictureOk.setText(mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText))
+                            mTvPictureOk.text = mContext.getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)
                         } else {
-                            mTvPictureOk.setText(mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum))
+                            mTvPictureOk.text = mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum)
                         }
                     }
                 } else if (PictureSelectionConfig.style != null) {
@@ -282,13 +290,13 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                         if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
                             mTvPictureOk.text = String.format(PictureSelectionConfig.style.pictureCompleteText, startCount, config?.maxSelectNum)
                         } else {
-                            mTvPictureOk.setText(mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum))
+                            mTvPictureOk.text = mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum)
                         }
                     } else {
                         if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
                             mTvPictureOk.text = PictureSelectionConfig.style.pictureCompleteText
                         } else {
-                            mTvPictureOk.setText(mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum))
+                            mTvPictureOk.text = mContext.getString(R.string.picture_done_front_num, startCount, config?.maxSelectNum)
                         }
                     }
                 }

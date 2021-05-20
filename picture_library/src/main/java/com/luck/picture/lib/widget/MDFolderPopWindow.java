@@ -47,9 +47,9 @@ public class MDFolderPopWindow extends PopupWindow {
     private int maxHeight;
     private View rootViewBg;
 
-    public MDFolderPopWindow(Context context) {
+    public MDFolderPopWindow(Context context,PictureSelectionConfig config) {
         this.context = context;
-        this.config = PictureSelectionConfig.getInstance();
+        this.config = config;
         this.chooseMode = config.chooseMode;
         this.window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
         this.setContentView(window);

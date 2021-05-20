@@ -38,9 +38,6 @@ class SimpleActivity : AppCompatActivity(), View.OnClickListener {
                         .imageEngine(GlideEngine.createGlideEngine())
                         .selectionData(selectionData)
                         .forResult(PictureConfig.CHOOSE_REQUEST) //结果回调onActivityResult code
-                val windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle
-                overridePendingTransition(
-                        windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in)
             }
             else -> {
             }

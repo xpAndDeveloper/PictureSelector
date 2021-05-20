@@ -25,7 +25,6 @@ class PictureImageMDBottomAdapter(private val context: Context
     : BaseItemDraggableAdapter<LocalMedia, BaseViewHolder>(R.layout.picture_md_bottom_image_grid_item, localMedias) {
 
     private fun onBindViewHolder(helper: BaseViewHolder, item: LocalMedia) {
-        item.position = helper.absoluteAdapterPosition
         val path = item.path
         val mimeType = item.mimeType
         helper.setGone(R.id.btnCheck, !config.isSingleDirectReturn)
