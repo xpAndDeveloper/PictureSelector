@@ -49,7 +49,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     fun hideBottomEvent(event: HideBottom?) {
         if (event != null) {
             if (noChangeNum == 0) {
-                tabLayout.visibility = if (event.isHide) View.GONE else View.VISIBLE
+                tabLayout.visibility = if (event.isHide) View.INVISIBLE else View.VISIBLE
             } else {
                 noChangeNum--
             }

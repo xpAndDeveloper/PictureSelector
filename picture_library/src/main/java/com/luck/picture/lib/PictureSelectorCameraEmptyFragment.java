@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.luck.picture.lib.camera.view.CaptureLayoutMd;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -35,6 +36,8 @@ import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.widget.PictureMdBottomBarView;
 import com.yalantis.ucrop.UCrop;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,7 @@ import java.util.List;
  */
 public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
     protected PictureMdBottomBarView mPictureBottomView;
+    protected CaptureLayoutMd mCaptureLayout;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -87,6 +91,23 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
         mPictureBottomView = root.findViewById(R.id.picture_md_view);
         mPictureBottomView.initView(config, numComplete, true);
         mPictureBottomView.dataChanged(new ArrayList<>());
+        mPictureBottomView.setOnPictureListener(new PictureMdBottomBarView.OnPictureListener() {
+            @Override
+            public void onItemDragEnd(@NotNull List<? extends LocalMedia> data) {
+
+
+            }
+
+            @Override
+            public void onButtonComplete() {
+                onFinishNext(mPictureBottomView.getData());
+            }
+
+            @Override
+            public void onItemRemove(@NotNull LocalMedia item) {
+
+            }
+        });
     }
 
     /**
@@ -359,12 +380,37 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
     }
 
     /**
+     * 底部弹窗点击下一步时
+     * @param result
+     */
+    private void onFinishNext(List<LocalMedia> result) {
+        if (result.isEmpty()) return;
+        boolean isHasImage = PictureMimeType.isHasImage(result.get(0).getMimeType());
+        if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
+            compressImage(result);
+        } else {
+            onResult(result);
+        }
+    }
+
+    /**
      * dispatchCameraHandleResult
-     *
+     * 拍照或拍视频完成的时候
      * @param media
      */
     private void dispatchCameraHandleResult(LocalMedia media) {
-        mPictureBottomView.dataAdd(media);
+        boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
+        if (isHasImage) {
+            mPictureBottomView.dataAdd(media);
+            if (mCaptureLayout != null) {
+                mCaptureLayout.isMaxMedia(mPictureBottomView.getData().size() >= config.maxSelectNum, config.maxSelectNum);
+            }
+        } else {
+            // 视频处理 todo
+            if (mCaptureLayout != null) {
+                mCaptureLayout.isMaxMedia(mPictureBottomView.getData().size() >= config.maxVideoSelectNum, config.maxVideoSelectNum);
+            }
+        }
 
         //todo 需要这些逻辑
 //        boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());

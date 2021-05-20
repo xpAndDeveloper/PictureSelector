@@ -4,7 +4,6 @@
     android:id="@+id/select_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
     android:background="@color/picture_color_black"
     android:orientation="vertical">
 

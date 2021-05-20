@@ -9,19 +9,18 @@
 
     <include layout="@layout/picture_md_title_bar" />
 
-    <!--    <include layout="@layout/picture_md_bottom_bar" />-->
-
 
     <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/picture_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/select_bar_layout"
+        android:layout_above="@id/picture_bottom_view"
         android:layout_below="@id/titleBar"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="#101010"
         android:overScrollMode="never"
+        android:clipToPadding="false"
         android:paddingVertical="15dp" />
 
     <TextView

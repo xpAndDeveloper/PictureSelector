@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
@@ -315,6 +316,10 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
 
     fun updateIsStartAnimation(isStartAnimation: Boolean) {
         this.isStartAnimation = isStartAnimation
+    }
+
+    fun getData(): List<LocalMedia> {
+        return mdBottomAdapter?.data ?: listOf()
     }
 
     interface OnPictureListener {

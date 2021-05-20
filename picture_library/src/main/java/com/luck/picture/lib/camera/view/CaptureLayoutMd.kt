@@ -6,12 +6,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.luck.picture.lib.R
 import com.luck.picture.lib.camera.CustomCameraView
 import com.luck.picture.lib.camera.MDCustomCameraView
 import com.luck.picture.lib.camera.listener.CaptureListener
 import com.luck.picture.lib.camera.listener.ClickListener
 import com.luck.picture.lib.camera.listener.TypeListener
+import com.luck.picture.lib.dialog.PictureCustomDialog
 import kotlinx.android.synthetic.main.picture_capture_layout_md.view.*
 
 /**
@@ -44,6 +46,9 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     private val leftClickListener: ClickListener? = null  //左边按钮监听
     private val rightClickListener: ClickListener? = null //右边按钮监听
 
+    private var mIsMaxMedia = false
+    private var mIsMaxMediaNumber = 9
+
 
     fun setTypeListener(typeListener: TypeListener?) {
         this.typeListener = typeListener
@@ -61,18 +66,26 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     private fun initView() {
         mView.run {
             flTakePhoto.setOnClickListener {
-                captureListener?.takePictures()
+                if (mIsMaxMedia) {
+                    showPromptDialog(mContext.getString(R.string.picture_message_take_max_num, mIsMaxMediaNumber))
+                } else {
+                    captureListener?.takePictures()
+                }
             }
             flVideoRecord.setOnClickListener {
-                if (state == STATE_IDLE) {
-                    viewRecordStart.animate().scaleX(0f).scaleY(0f).start()
-                    viewRecording.animate().scaleX(1f).scaleY(1f).start()
-                    timer = RecordCountDownTimer(duration.toLong(), (duration / 360).toLong()) //录制定时器
-                    captureListener?.recordStart()
-                    timer?.start()
-                    state = STATE_RECORDERING
-                } else if (state == STATE_RECORDERING) {
-                   recordEnd()
+                if (mIsMaxMedia) {
+                    showPromptDialog(mContext.getString(R.string.picture_message_video_tak_max_num, mIsMaxMediaNumber))
+                } else {
+                    if (state == STATE_IDLE) {
+                        viewRecordStart.animate().scaleX(0f).scaleY(0f).start()
+                        viewRecording.animate().scaleX(1f).scaleY(1f).start()
+                        timer = RecordCountDownTimer(duration.toLong(), (duration / 360).toLong()) //录制定时器
+                        captureListener?.recordStart()
+                        timer?.start()
+                        state = STATE_RECORDERING
+                    } else if (state == STATE_RECORDERING) {
+                        recordEnd()
+                    }
                 }
             }
             tvSave.setOnClickListener {
@@ -150,6 +163,12 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     fun setRightClickListener(rightClickListener: ClickListener) {
     }
 
+    // 是否达到了最大上限
+    fun isMaxMedia(isMaxMedia: Boolean, maxNumber: Int){
+        this.mIsMaxMedia = isMaxMedia
+        this.mIsMaxMediaNumber = maxNumber
+    }
+
     //更新进度条
     private fun updateProgress(millisUntilFinished: Long) {
         recorded_time = (duration - millisUntilFinished).toInt()
@@ -179,5 +198,21 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
             mProgressBar.progress = 100
             recordEnd()
         }
+    }
+
+    /**
+     * Dialog
+     *
+     * @param content
+     */
+    private fun showPromptDialog(content: String?) {
+        val dialog = PictureCustomDialog(mContext, R.layout.picture_prompt_dialog)
+        val btnOk = dialog.findViewById<TextView>(R.id.btnOk)
+        val tvContent = dialog.findViewById<TextView>(R.id.tv_content)
+        tvContent.text = content
+        btnOk.setOnClickListener { v: View? ->
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }

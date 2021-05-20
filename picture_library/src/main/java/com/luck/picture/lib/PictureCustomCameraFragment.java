@@ -97,9 +97,6 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
     protected void initWidgets(View root) {
         super.initWidgets(root);
         pictureEmpty = root.findViewById(R.id.picture_empty);
-//        mPictureBottomView = root.findViewById(R.id.picture_md_view);
-//        mPictureBottomView.initView(config, numComplete, true);
-//        mPictureBottomView.dataChanged(new ArrayList<>());
     }
 
     @Override
@@ -161,6 +158,7 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
         // 获取录制按钮
         CaptureLayoutMd captureLayout = mCameraView.getCaptureLayout();
         if (captureLayout != null) {
+            mCaptureLayout = captureLayout;
             captureLayout.setButtonFeatures(config.buttonFeatures);
         }
         // 拍照预览
