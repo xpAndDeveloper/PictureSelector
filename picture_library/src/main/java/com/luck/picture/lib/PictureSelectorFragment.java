@@ -87,7 +87,7 @@ import static androidx.core.app.ActivityCompat.finishAfterTransition;
  */
 public class PictureSelectorFragment extends PictureBaseFragment implements View.OnClickListener,
         OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener,
-        OnRecyclerViewPreloadMoreListener, OnMDBottomPhotoSelectChangedListener<LocalMedia> {
+        OnRecyclerViewPreloadMoreListener {
     private static final String TAG = PictureSelectorFragment.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
@@ -1038,18 +1038,6 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 底部列表删除
-     *
-     * @param item
-     */
-    @Override
-    public void remove(LocalMedia item) {
-        mAdapter.getSelectedData().remove(item);
-        mAdapter.subSelectPosition();
-        mAdapter.notifyDataSetChanged();
     }
 
     /**

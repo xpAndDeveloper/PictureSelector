@@ -77,6 +77,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                 item?.let {
                     // 点击 item 的删除按钮
                     onPictureListener?.onItemRemove(it)
+                    changeImageNumber(mdBottomAdapter?.data?: arrayListOf())
                 }
             })
             val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(mdBottomAdapter)
@@ -101,6 +102,12 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                 onPictureListener?.onButtonComplete()
             }
         }
+    }
+
+    fun dataAdd(data: LocalMedia) {
+        if (mdBottomAdapter == null) return
+        mdBottomAdapter?.addData(data)
+        changeImageNumber(mdBottomAdapter!!.data)
     }
 
 
