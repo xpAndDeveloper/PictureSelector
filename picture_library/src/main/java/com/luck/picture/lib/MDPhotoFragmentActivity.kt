@@ -42,7 +42,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
     private lateinit var tabLayout: MagicIndicator
     private var selectionData = arrayListOf<LocalMedia>()
 
-    private var noChangeNum = 2//前两次不处理
+    private var noChangeNum = 5//前两次不处理
 //    private var mCameraFragment: PictureCustomCameraFragment ? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)

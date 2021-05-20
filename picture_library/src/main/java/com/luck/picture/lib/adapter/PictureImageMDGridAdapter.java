@@ -736,7 +736,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask));
         } else {
             if (config.chooseMode == PictureMimeType.ofVideo()) {
-                if (config.videoSelectMaxSecond > 0 && image.getDuration() < config.videoSelectMaxSecond) {
+                if (config.videoSelectMaxSecond > 0 && image.getDuration() <= config.videoSelectMaxSecond) {
                     holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def));
                 } else {
                     holder.mask.setBackground(ContextCompat.getDrawable(context, R.drawable.picture_mask_def_50));
