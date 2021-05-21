@@ -88,27 +88,30 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
                     }
                 }
             }
-            tvSave.setOnClickListener {
-                typeListener?.confirm()
-            }
         }
     }
 
     private fun initCameraView(){
+        state = STATE_IDLE
         if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
             flTakePhoto.visibility = View.VISIBLE
+            flTakePhoto.isEnabled = true
             flVideoRecord.visibility = View.GONE
             mProgressBar.visibility = View.INVISIBLE
         } else {
             flTakePhoto.visibility = View.GONE
             flVideoRecord.visibility = View.VISIBLE
+            flVideoRecord.isEnabled = true
             mProgressBar.visibility = View.VISIBLE
+            viewRecordStart.scaleX = 1f
+            viewRecordStart.scaleY = 1f
+            viewRecording.scaleX = 0f
+            viewRecording.scaleY = 0f
         }
     }
 
     fun setCameraType(type: Int){
         mCameraType = type
-        initCameraView()
         typeListener?.cancel()
     }
 
@@ -121,8 +124,9 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     fun startTypeBtnAnimator() {
         if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
             typeListener?.confirm()
-        } else {
-            tvSave.visibility = View.VISIBLE
+        } else if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_RECORDER){
+            // 也许以后视频要做不同的处理
+            typeListener?.confirm()
         }
     }
 
@@ -130,6 +134,9 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     }
 
     fun resetCaptureLayout() {
+        initCameraView()
+        timer?.cancel()
+        mProgressBar.progress = 0
     }
 
 

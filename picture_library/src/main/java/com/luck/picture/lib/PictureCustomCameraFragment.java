@@ -16,7 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.camera.MDCustomCameraView;
+import com.luck.picture.lib.camera.controller.MdCameraController;
 import com.luck.picture.lib.camera.listener.CameraListener;
+import com.luck.picture.lib.camera.listener.LoadingListener;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -167,6 +169,17 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
                 PictureSelectionConfig.imageEngine.loadImage(getContext(), file.getAbsolutePath(), imageView);
             }
         });
+        mCameraView.setLoadingListener(new LoadingListener() {
+            @Override
+            public void onLoadingShow() {
+                showPleaseDialog();
+            }
+
+            @Override
+            public void onLoadingHide() {
+                dismissDialog();
+            }
+        });
         // 设置拍照或拍视频回调监听
         mCameraView.setCameraListener(new CameraListener() {
             @Override
@@ -291,6 +304,14 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
     public void setCameraPreviewIsVideo(boolean isVideo) {
         if (mCameraView != null) {
             mCameraView.setCameraPreviewIsVideo(isVideo);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mCameraView != null) {
+            mCameraView.fragmentUserVisibleHint(false);
         }
     }
 

@@ -22,12 +22,12 @@ import java.util.concurrent.atomic.AtomicBoolean
  *Date : 2021/5/20
  *Describe :
  */
-class MdCameraController(context: Context, private val lifecycleOwner: LifecycleOwner, private val viewFinder: PreviewView, cameraModel: CameraModel) {
+class MdCameraController(context: Context, private var lifecycleOwner: LifecycleOwner?, private val viewFinder: PreviewView, cameraModel: CameraModel) {
     private val TAG = "CameraController"
 
     private var mContext: Context = context
 
-    enum class CameraModel{
+    enum class CameraModel {
         IMAGE_MODEL, VIDEO_MODEL
     }
 
@@ -45,6 +45,8 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
     private var rotation: Int = 0
 
     private val mVideoIsRecording = AtomicBoolean(false)
+
+    private var mSaveVideo = false
 
 
     private fun initListener() {
@@ -104,14 +106,13 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
         }, ContextCompat.getMainExecutor(mContext))
     }
 
-
     private fun startCamera() {
         try {
             // Unbind use cases before rebinding
             mCameraProvider?.unbindAll()
             // Bind use cases to camera
             mCamera = mCameraProvider?.bindToLifecycle(
-                    lifecycleOwner,
+                    lifecycleOwner!!,
                     mCameraSelector,
                     preview,
                     if (mEnabledUseCases == CameraModel.VIDEO_MODEL) mVideoCapture else mImageCapture)
@@ -123,14 +124,22 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
     /**
      * 切换拍视频还是拍照
      */
-    fun setEnabledUseCases(model: CameraModel){
+    fun setEnabledUseCases(model: CameraModel) {
+        if (mEnabledUseCases == CameraModel.VIDEO_MODEL) {
+            stopRecording()
+        }
         mEnabledUseCases = model
         initPreview()
         startCamera()
     }
 
-    fun stopRecording() {
+    /**
+     * 停止录制
+     * 是否需要保存视频
+     */
+    fun stopRecording(saveVideo: Boolean = false) {
         if (mVideoIsRecording.get()) {
+            mSaveVideo = saveVideo
             mVideoCapture?.stopRecording()
         }
     }
@@ -158,7 +167,9 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
     @MainThread
     fun setImageCaptureFlashMode(@FlashMode flashMode: Int) {
 //        Threads.checkMainThread()
-        mImageCapture?.flashMode = flashMode
+        if (mEnabledUseCases == CameraModel.IMAGE_MODEL) {
+            mImageCapture?.flashMode = flashMode
+        }
     }
 
     @ExperimentalVideo
@@ -178,7 +189,9 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
         mCamera = null
         if (mCameraProvider != null) {
             mCameraProvider!!.unbindAll()
+            mCameraProvider = null
         }
+        lifecycleOwner = null
     }
 
     @MainThread
@@ -204,8 +217,10 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
                     override fun onVideoSaved(
                             outputFileResults: VideoCapture.OutputFileResults) {
                         mVideoIsRecording.set(false)
-                        callback.onVideoSaved(
-                                OutputFileResults.create(outputFileResults.savedUri))
+                        if (mSaveVideo) {
+                            callback.onVideoSaved(
+                                    OutputFileResults.create(outputFileResults.savedUri))
+                        }
                     }
 
                     override fun onError(videoCaptureError: Int, message: String,
@@ -225,13 +240,7 @@ class MdCameraController(context: Context, private val lifecycleOwner: Lifecycle
         }
     }
 
-    fun setCaptureFlashMode(@FlashMode flashMode: Int) {
-        if (mEnabledUseCases == CameraModel.IMAGE_MODEL) {
-            mImageCapture?.flashMode = flashMode
-        }
-    }
-
-    fun setCameraSelector(cameraSelector: CameraSelector){
+    fun setCameraSelector(cameraSelector: CameraSelector) {
         mCameraSelector = cameraSelector
         startCamera()
     }

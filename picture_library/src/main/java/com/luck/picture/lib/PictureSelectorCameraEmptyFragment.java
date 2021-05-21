@@ -406,10 +406,13 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
                 mCaptureLayout.isMaxMedia(mPictureBottomView.getData().size() >= config.maxSelectNum, config.maxSelectNum);
             }
         } else {
-            // 视频处理 todo
-            if (mCaptureLayout != null) {
-                mCaptureLayout.isMaxMedia(mPictureBottomView.getData().size() >= config.maxVideoSelectNum, config.maxVideoSelectNum);
-            }
+            // 视频处理
+//            if (mCaptureLayout != null) {
+//                mCaptureLayout.isMaxMedia(mPictureBottomView.getData().size() >= config.maxVideoSelectNum, config.maxVideoSelectNum);
+//            }
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(media);
+            onResult(result);
         }
 
         //todo 需要这些逻辑
