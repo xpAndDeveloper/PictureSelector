@@ -1,5 +1,6 @@
 package com.luck.picture.lib
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,21 +9,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.event.HideBottom
 import com.luck.picture.lib.immersive.ImmersiveManage
-import com.luck.picture.lib.tools.PictureFileUtils
+import com.luck.picture.lib.permissions.PermissionChecker
+import com.luck.picture.lib.tools.ToastUtils
 import com.luck.picture.lib.widget.NoScrollViewPager
 import net.lucode.hackware.magicindicator.MagicIndicator
-import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.abs.IPagerNavigator
 import net.lucode.hackware.magicindicator.buildins.UIUtil
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
@@ -141,7 +140,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
                     tabLayout.onPageSelected(index)
                     commonNavigator.pagerIndicator.onPageScrolled(index, 0f, 0)
                     viewPager.currentItem = if (index > 1) 2 else index
-                    if (index > 1 && fragments[2] is PictureCustomCameraFragment){
+                    if (index > 1 && fragments[2] is PictureCustomCameraFragment) {
                         (fragments[2] as PictureCustomCameraFragment).setCameraPreviewIsVideo(index == 2)
                     }
                 }
@@ -176,7 +175,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
          * 1.使用getSupportFragmentManager().getFragments()获取到当前Activity中添加的Fragment集合
          * 2.遍历Fragment集合，手动调用在当前Activity中的Fragment中的onActivityResult()方法。
          */
-        if (supportFragmentManager.fragments != null && supportFragmentManager.fragments.size > 0) {
+        if (supportFragmentManager.fragments.size > 0) {
             val fragments = supportFragmentManager.fragments
             fragments[viewPager.currentItem].onActivityResult(requestCode, resultCode, data)
         }
@@ -184,20 +183,8 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE ->                 // 存储权限
-            {
-                var i = 0
-                while (i < grantResults.size) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        PictureFileUtils.deleteCacheDirFile(this@MDPhotoFragmentActivity, PictureMimeType.ofImage())
-                    } else {
-                        Toast.makeText(this@MDPhotoFragmentActivity,
-                                getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show()
-                    }
-                    i++
-                }
-            }
+        fragments.forEach {
+            it.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 }
