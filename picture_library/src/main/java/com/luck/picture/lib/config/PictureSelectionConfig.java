@@ -57,6 +57,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
     public int themeStyleId = R.style.picture_default_style;
     public int selectionMode = PictureConfig.MULTIPLE;
     public int maxSelectNum = 9;
+    public int selectedNum = 0;
     public int minSelectNum = 0;
     public int maxVideoSelectNum = 1;
     public int minVideoSelectNum = 0;

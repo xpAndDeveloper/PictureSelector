@@ -175,7 +175,7 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                     }
                     mTvPictureImgNum.visibility = VISIBLE
                     when (config?.chooseMode) {
-                        PictureConfig.TYPE_ALL, PictureConfig.TYPE_IMAGE -> mTvPictureImgNum.text = "(" + selectData.size + "/" + config?.maxSelectNum + ")"
+                        PictureConfig.TYPE_ALL, PictureConfig.TYPE_IMAGE -> mTvPictureImgNum.text = "(" + selectData.size + "/" + ((config?.maxSelectNum?:0) - (config?.selectedNum?:0)) + ")"
                         PictureConfig.TYPE_VIDEO -> mTvPictureImgNum.text = "(" + selectData.size + "/" + config?.maxVideoSelectNum + ")"
                         else -> {
                         }

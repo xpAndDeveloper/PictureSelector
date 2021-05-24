@@ -9,7 +9,6 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureConfig
-import com.luck.picture.lib.config.PictureSelectionConfig
 import com.luck.picture.lib.entity.LocalMedia
 
 class SimpleActivity : AppCompatActivity(), View.OnClickListener {
@@ -36,7 +35,8 @@ class SimpleActivity : AppCompatActivity(), View.OnClickListener {
                 PictureSelector.create(this)
                         .openMdGallery() //全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
                         .imageEngine(GlideEngine.createGlideEngine())
-                        .selectionData(selectionData)
+                        .maxSelectNum(9)
+                        .selectedNum(selectionData.size)
                         .forResult(PictureConfig.CHOOSE_REQUEST) //结果回调onActivityResult code
             }
             else -> {
@@ -51,8 +51,8 @@ class SimpleActivity : AppCompatActivity(), View.OnClickListener {
                 PictureConfig.CHOOSE_REQUEST -> {
                     // 图片选择结果回调
                     val selectList = PictureSelector.obtainMultipleResult(data)
-                    selectionData = selectList
-                    Log.e("LocalMedia","图库返回："+ selectionData.size.toString())
+                    selectionData.addAll(selectList)
+                    btn_mindu.text = "MD"+selectionData.size
                     // 例如 LocalMedia 里面返回五种path
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true

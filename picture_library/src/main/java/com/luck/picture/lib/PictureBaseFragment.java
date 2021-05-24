@@ -151,7 +151,8 @@ public abstract class PictureBaseFragment extends Fragment {
             if (selectionData != null && selectionData.size() > 0) {
                 config.selectionMedias = selectionData;
             }
-
+            config.maxSelectNum = bundle.getInt("maxSelectNum",9);
+            config.selectedNum = bundle.getInt("selectedNum",0);
         }
 
 

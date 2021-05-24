@@ -519,7 +519,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                     return;
                 }
 
-                if (count >= config.maxSelectNum && !isChecked) {
+                if (count + config.selectedNum >= config.maxSelectNum && !isChecked) {
                     showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
@@ -539,7 +539,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                     return;
                 }
             } else {
-                if (count >= config.maxSelectNum && !isChecked) {
+                if (count + config.selectedNum >= config.maxSelectNum && !isChecked) {
                     showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
@@ -553,7 +553,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
             if (PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0) {
-                if (count >= config.maxVideoSelectNum && !isChecked) {
+                if (count + config.selectedNum >= config.maxVideoSelectNum && !isChecked) {
                     showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
                     return;
                 }
@@ -567,7 +567,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                     return;
                 }
             } else {
-                if (count >= config.maxSelectNum && !isChecked) {
+                if (count + config.selectedNum >= config.maxSelectNum && !isChecked) {
                     showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxSelectNum));
                     return;
                 }
@@ -584,7 +584,6 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
         }
-        int position = -1;
         if (isChecked) {
             for (int i = 0; i < count; i++) {
                 LocalMedia media = selectData.get(i);
@@ -593,7 +592,6 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
                 }
                 if (media.getPath().equals(image.getPath())
                         || media.getId() == image.getId()) {
-                    position = i;
                     selectData.remove(media);
                     subSelectPosition();
 //                    AnimUtils.disZoom(contentHolder.ivPicture, config.zoomAnim);
@@ -630,8 +628,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             }
 
             selectData.add(image);
-            position = selectData.size() - 1;
-            image.setNum(selectData.size());
+            image.setNum(selectData.size() + config.selectedNum);
             VoiceUtils.getInstance().play();
 //            AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
@@ -717,7 +714,7 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
             int size = selectData.size();
             for (int index = 0; index < size; index++) {
                 LocalMedia media = selectData.get(index);
-                media.setNum(index + 1);
+                media.setNum(index + config.selectedNum + 1);
                 notifyItemChanged(media.position);
             }
         }

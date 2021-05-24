@@ -46,6 +46,8 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 
 public class MDPictureSelectionModel {
     private final PictureSelector selector;
+    private int maxSelectNum = 9;
+    private int selectedNum = 9;
     public List<LocalMedia> selectionMedias = new ArrayList<>();
     public MDPictureSelectionModel(PictureSelector selector) {
         this.selector = selector;
@@ -67,6 +69,15 @@ public class MDPictureSelectionModel {
      */
     public MDPictureSelectionModel selectionData(List<LocalMedia> selectionData) {
         selectionMedias = selectionData;
+        return this;
+    }
+
+    public MDPictureSelectionModel maxSelectNum(int maxSelectNum){
+        this.maxSelectNum = maxSelectNum;
+        return this;
+    }
+    public MDPictureSelectionModel selectedNum(int selectedNum){
+        this.selectedNum = selectedNum;
         return this;
     }
     /**
@@ -156,6 +167,8 @@ public class MDPictureSelectionModel {
             }
             Intent intent = new Intent(activity, MDPhotoFragmentActivity.class);
             intent.putParcelableArrayListExtra("selectionMedias", (ArrayList<? extends Parcelable>) selectionMedias);
+            intent.putExtra("maxSelectNum",maxSelectNum);
+            intent.putExtra("selectedNum",selectedNum);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -184,6 +197,8 @@ public class MDPictureSelectionModel {
             }
             Intent intent = new Intent(activity, MDPhotoFragmentActivity.class);
             intent.putParcelableArrayListExtra("selectionMedias", (ArrayList<? extends Parcelable>) selectionMedias);
+            intent.putExtra("maxSelectNum",maxSelectNum);
+            intent.putExtra("selectedNum",selectedNum);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);

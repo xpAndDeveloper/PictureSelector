@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
@@ -37,8 +38,11 @@ import org.greenrobot.eventbus.ThreadMode
 class MDPhotoFragmentActivity : AppCompatActivity() {
     private val titles = arrayOf("照片", "视频", "拍视频", "拍照")
     private val fragments = arrayListOf<Fragment>()
+    private var maxSelectNum = 9
+    private var selectedNum = 9
     private lateinit var viewPager: NoScrollViewPager
     private lateinit var tabLayout: MagicIndicator
+    private lateinit var llTabLayout: LinearLayout
     private var selectionData = arrayListOf<LocalMedia>()
 
     private var noChangeNum = 5//前两次不处理
@@ -57,8 +61,9 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        selectionData = intent.getParcelableArrayListExtra<LocalMedia>("selectionMedias")
-                ?: arrayListOf()
+        selectionData = intent.getParcelableArrayListExtra<LocalMedia>("selectionMedias") ?: arrayListOf()
+        maxSelectNum = intent.getIntExtra("maxSelectNum",9)
+        selectedNum = intent.getIntExtra("selectedNum",9)
         EventBus.getDefault().register(this)
         ImmersiveManage.immersiveAboveAPI23(this, Color.parseColor("#101010"), Color.parseColor("#101010"), false)
         setContentView(R.layout.activity_md_photo)
@@ -78,35 +83,25 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         fragments.add(PictureCustomCameraFragment())
         fragments[0].arguments = Bundle().apply {
             putInt("chooseMode", PictureMimeType.ofImage())
-            if (selectionData.isNotEmpty()) {
-                if (selectionData.first().chooseModel == PictureMimeType.ofImage()) {
-                    putParcelableArrayList("selectionData", selectionData)
-                }
+            if (selectedNum != 0) {
+                putInt("maxSelectNum",maxSelectNum)
+                putInt("selectedNum",selectedNum)
             }
         }
         fragments[1].arguments = Bundle().apply {
             putInt("chooseMode", PictureMimeType.ofVideo())
-            if (selectionData.isNotEmpty()) {
-                if (selectionData.first().chooseModel == PictureMimeType.ofVideo()) {
-                    putParcelableArrayList("selectionData", selectionData)
-                }
-            }
         }
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tab)
+        llTabLayout = findViewById(R.id.ll_tab)
         viewPager.offscreenPageLimit = 3
         viewPager.adapter = initViewPagerAdapter()
         tabLayout.navigator = initCommonNavigator()
-//        ViewPagerHelper.bind(tabLayout, viewPager)
-        if (selectionData.isNotEmpty()) {
-            when (selectionData.first().chooseModel) {
-                PictureMimeType.ofImage() -> {
-                    viewPager.currentItem = 0
-                }
-                PictureMimeType.ofVideo() -> {
-                    viewPager.currentItem = 1
-                }
-            }
+        if (selectedNum != 0){
+            llTabLayout.visibility = View.GONE
+            viewPager.currentItem = 0
+        }else{
+            llTabLayout.visibility = View.VISIBLE
         }
     }
 
