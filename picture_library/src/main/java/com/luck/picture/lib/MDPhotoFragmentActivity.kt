@@ -64,7 +64,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_md_photo)
         Log.e("LocalMedia", "数据恢复：" + selectionData.size.toString())
         initView()
-        tabLayout.visibility = if (selectionData.isNotEmpty()) View.GONE else View.VISIBLE
+        tabLayout.visibility = if (selectionData.isNotEmpty()) View.INVISIBLE else View.VISIBLE
     }
 
     override fun onDestroy() {

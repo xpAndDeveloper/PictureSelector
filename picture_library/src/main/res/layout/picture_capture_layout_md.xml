@@ -22,12 +22,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
         android:background="@drawable/picture_round_shape_half_black"
         android:visibility="gone"
+        android:layout_marginBottom="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ucrop_space">
+        app:layout_constraintStart_toStartOf="parent">
 
         <View
             android:layout_width="64dp"
@@ -43,6 +43,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="94dp"
+        android:visibility="visible"
         android:background="@drawable/picture_round_oval_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

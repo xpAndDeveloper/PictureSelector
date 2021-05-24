@@ -70,7 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl1"
         android:paddingTop="15dp"
-        android:paddingBottom="20dp"
         android:overScrollMode="never"
         android:paddingHorizontal="20dp" />
 

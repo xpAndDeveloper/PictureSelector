@@ -253,7 +253,7 @@ public class MDCustomCameraView extends RelativeLayout {
             public void recordShort(final long time) {
                 recordTime = time;
                 mSwitchCamera.setVisibility(VISIBLE);
-                mFlashLamp.setVisibility(VISIBLE);
+                mFlashLamp.setVisibility(INVISIBLE);
                 mCaptureLayout.resetCaptureLayout();
                 mCaptureLayout.setTextWithAnimation(getContext().getString(R.string.picture_recording_time_is_short));
                 mCameraController.stopRecording(false);
@@ -292,7 +292,7 @@ public class MDCustomCameraView extends RelativeLayout {
                 if (mOutMediaFile == null || !mOutMediaFile.exists()) {
                     return;
                 }
-                // 拷贝一份至公共目录
+                // 拷贝一份至公共目录, 针对 Android Q 以上
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
                     PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
 
@@ -317,6 +317,18 @@ public class MDCustomCameraView extends RelativeLayout {
                             }
                         }
                     });
+                } else {
+                    if (mCameraController.isImageCaptureEnabled()) {
+                        mImagePreview.setVisibility(INVISIBLE);
+                        if (mCameraListener != null) {
+                            mCameraListener.onPictureSuccess(mOutMediaFile);
+                        }
+                    } else {
+                        stopVideoPlay();
+                        if (mCameraListener != null || !mOutMediaFile.exists()) {
+                            mCameraListener.onRecordSuccess(mOutMediaFile);
+                        }
+                    }
                 }
             }
         });
@@ -577,7 +589,7 @@ public class MDCustomCameraView extends RelativeLayout {
             }
         }
         mSwitchCamera.setVisibility(VISIBLE);
-        mFlashLamp.setVisibility(VISIBLE);
+        mFlashLamp.setVisibility(INVISIBLE);
         mCameraPreviewView.setVisibility(View.VISIBLE);
         mCaptureLayout.resetCaptureLayout();
     }
