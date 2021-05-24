@@ -142,7 +142,7 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
                 isPermissionChecker = PermissionChecker.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO);
             }
             if (isPermissionChecker) {
-                startCamera();
+//                startCamera();
             } else {
                 PermissionChecker
                         .requestPermissions(requireActivity(),
@@ -154,25 +154,6 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
         }
     }
 
-    /**
-     * Open the Camera by type
-     */
-    private void startCamera() {
-        switch (config.chooseMode) {
-            case PictureConfig.TYPE_ALL:
-            case PictureConfig.TYPE_IMAGE:
-                startOpenCamera();
-                break;
-            case PictureConfig.TYPE_VIDEO:
-                startOpenCameraVideo();
-                break;
-            case PictureConfig.TYPE_AUDIO:
-                startOpenCameraAudio();
-                break;
-            default:
-                break;
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

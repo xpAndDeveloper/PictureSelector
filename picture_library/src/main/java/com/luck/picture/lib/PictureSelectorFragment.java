@@ -654,46 +654,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         return false;
     }
 
-    /**
-     * Open Camera
-     */
-    public void startCamera() {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
-                if (config.chooseMode == PictureConfig.TYPE_ALL) {
-                    PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
-                    selectedDialog.setOnItemClickListener(this);
-                    selectedDialog.show(getFragmentManager(), "PhotoItemSelectedDialog");
-                } else {
-                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
-                    config.cameraMimeType = config.chooseMode;
-                }
-                return;
-            }
-            if (config.isUseCustomCamera) {
-                startCustomCamera();
-                return;
-            }
-            switch (config.chooseMode) {
-                case PictureConfig.TYPE_ALL:
-                    PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
-                    selectedDialog.setOnItemClickListener(this);
-                    selectedDialog.show(getFragmentManager(), "PhotoItemSelectedDialog");
-                    break;
-                case PictureConfig.TYPE_IMAGE:
-                    startOpenCamera();
-                    break;
-                case PictureConfig.TYPE_VIDEO:
-                    startOpenCameraVideo();
-                    break;
-                case PictureConfig.TYPE_AUDIO:
-                    startOpenCameraAudio();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+
 
     /**
      * Open Custom Camera
@@ -1217,7 +1178,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                     .checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) &&
                     PermissionChecker
                             .checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                startCamera();
+//                startCamera();
             } else {
                 PermissionChecker.requestPermissions(getActivity(), new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -1973,7 +1934,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                     PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofImage();
                 } else {
-                    startOpenCamera();
+//                    startOpenCamera();
                 }
                 break;
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
@@ -1981,7 +1942,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
                     PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofVideo();
                 } else {
-                    startOpenCameraVideo();
+//                    startOpenCameraVideo();
                 }
                 break;
             default:
@@ -2013,7 +1974,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             case PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE:
                 // Using the camera, retrieve the storage permission
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startCamera();
+//                    startCamera();
                 } else {
                     showPermissionsDialog(false, getString(R.string.picture_jurisdiction));
                 }
@@ -2021,7 +1982,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
                 // Recording Permissions
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startCustomCamera();
+//                    startCustomCamera();
                 } else {
                     showPermissionsDialog(false, getString(R.string.picture_audio));
                 }
