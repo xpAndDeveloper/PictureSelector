@@ -186,11 +186,13 @@ class MdCameraController(context: Context, private var lifecycleOwner: Lifecycle
     }
 
     fun unbind() {
-        mCamera = null
         if (mCameraProvider != null) {
             mCameraProvider!!.unbindAll()
             mCameraProvider = null
         }
+        mCamera = null
+        preview = null
+        mSensorRotationListener = null
         lifecycleOwner = null
     }
 
