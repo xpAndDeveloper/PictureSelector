@@ -569,8 +569,10 @@ public class MediaUtils {
             public void onSuccess(Integer orientation) {
                 if (orientation == ExifInterface.ORIENTATION_ROTATE_90
                         || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                    media.setWidth(media.getHeight());
-                    media.setHeight(media.getWidth());
+                    int height= media.getHeight();
+                    int width= media.getWidth();
+                    media.setWidth(height);
+                    media.setHeight(width);
                 }
                 media.setOrientation(orientation);
                 if (listener != null) {

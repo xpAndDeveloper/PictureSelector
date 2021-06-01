@@ -47,6 +47,9 @@
         <activity
             android:name=".PictureExternalPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".MDPicturePreviewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
             android:name=".PicturePlayAudioActivity"

@@ -123,6 +123,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
 
     private fun initCommonNavigator(): IPagerNavigator? {
         val commonNavigator = CommonNavigator(this)
+        commonNavigator.isAdjustMode = true
         commonNavigator.adapter = object : CommonNavigatorAdapter() {
             override fun getTitleView(context: Context?, index: Int): IPagerTitleView {
                 val simplePagerTitleView = SimplePagerTitleView(context)

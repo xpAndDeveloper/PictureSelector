@@ -742,7 +742,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
         bundle.putBoolean(PictureConfig.EXTRA_SHOW_CAMERA, mAdapter.isShowCamera());
         bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
-        JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
+        JumpUtils.startMDPicturePreviewActivity(getContext(), bundle,
                 config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
 
         requireActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation,
@@ -1267,7 +1267,8 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
             bundle.putParcelable(PictureConfig.EXTRA_CONFIG, config);
             bundle.putInt(PictureConfig.EXTRA_DATA_COUNT, ValueOf.toInt(mTvPictureTitle.getTag(R.id.view_count_tag)));
             bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
-            JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
+            bundle.putInt("selectedNum",config.selectedNum);
+            JumpUtils.startMDPicturePreviewActivity(getContext(), bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
             requireActivity().overridePendingTransition(PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation, R.anim.picture_anim_fade_in);
         }
