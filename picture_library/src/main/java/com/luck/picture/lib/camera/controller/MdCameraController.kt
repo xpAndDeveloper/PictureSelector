@@ -56,6 +56,7 @@ class MdCameraController(context: Context, private var lifecycleOwner: Lifecycle
                 mVideoCapture?.setTargetRotation(rotation)
             }
         }
+        mSensorRotationListener?.enable()
     }
 
     init {
@@ -192,6 +193,7 @@ class MdCameraController(context: Context, private var lifecycleOwner: Lifecycle
         }
         mCamera = null
         preview = null
+        mSensorRotationListener?.disable()
         mSensorRotationListener = null
         lifecycleOwner = null
     }
