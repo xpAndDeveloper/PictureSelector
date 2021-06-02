@@ -93,8 +93,10 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
         }
         for (int j = 0; j < data.size(); j++) {
             LocalMedia media = data.get(j);
-            if (selection.contains(media)) {
-                selection.get(selection.indexOf(media)).setPosition(j);
+            for (LocalMedia item :selection) {
+                if (media.getPath().equals(item.getPath()) || media.getId() == item.getId()) {
+                    selection.get(selection.indexOf(item)).setPosition(j);
+                }
             }
         }
         this.selectData = selection;
