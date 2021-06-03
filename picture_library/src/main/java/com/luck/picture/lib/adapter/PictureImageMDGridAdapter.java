@@ -73,9 +73,9 @@ public class PictureImageMDGridAdapter extends RecyclerView.Adapter<RecyclerView
     public void bindData(List<LocalMedia> data) {
         this.data = data == null ? new ArrayList<>() : data;
         this.notifyDataSetChanged();
-//        if (imageSelectChangedListener != null) {
-//            imageSelectChangedListener.onChange(selectData);
-//        }
+        if (imageSelectChangedListener != null) {
+            imageSelectChangedListener.onChange(selectData);
+        }
     }
 
     public void bindSelectData(List<LocalMedia> images) {
