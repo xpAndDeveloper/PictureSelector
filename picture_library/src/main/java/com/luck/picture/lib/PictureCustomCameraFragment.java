@@ -99,6 +99,9 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
     protected void initWidgets(View root) {
         super.initWidgets(root);
         pictureEmpty = root.findViewById(R.id.picture_empty);
+        root.findViewById(R.id.picture_md_close).setOnClickListener(v -> {
+            onBackPressed();
+        });
     }
 
     @Override
@@ -220,6 +223,7 @@ public class PictureCustomCameraFragment extends PictureSelectorCameraEmptyFragm
 
         //左边按钮点击事件
         mCameraView.setOnClickListener(() -> onBackPressed());
+
     }
 
     public void onBackPressed() {

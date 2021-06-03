@@ -48,6 +48,7 @@ import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.camera.view.CaptureLayoutMd;
@@ -137,7 +138,7 @@ public class MDCustomCameraView extends RelativeLayout {
         mSwitchCamera = findViewById(R.id.image_switch);
         mFlashLamp = findViewById(R.id.image_flash);
         mCaptureLayout = findViewById(R.id.capture_layout);
-        mSwitchCamera.setImageResource(R.drawable.picture_ic_camera);
+        mSwitchCamera.setImageResource(R.drawable.picture_ic_switch_camera);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mCameraController = new MdCameraController(getContext(), (LifecycleOwner) getContext(), mCameraPreviewView, MdCameraController.CameraModel.IMAGE_MODEL);
         }
@@ -284,7 +285,7 @@ public class MDCustomCameraView extends RelativeLayout {
             @Override
             public void cancel() {
                 stopVideoPlay();
-                resetState();
+                resetState(true);
             }
 
             @Override
@@ -574,7 +575,7 @@ public class MDCustomCameraView extends RelativeLayout {
      * 重置状态
      */
     @SuppressLint("UnsafeOptInUsageError")
-    private void resetState() {
+    private void resetState(boolean isDeleteFile) {
         if (mCameraController.isImageCaptureEnabled()) {
             mImagePreview.setVisibility(INVISIBLE);
         } else {
@@ -582,7 +583,7 @@ public class MDCustomCameraView extends RelativeLayout {
                 mCameraController.stopRecording(false);
             }
         }
-        if (mOutMediaFile != null && mOutMediaFile.exists()) {
+        if (mOutMediaFile != null && mOutMediaFile.exists() && isDeleteFile) {
             mOutMediaFile.delete();
             if (!SdkVersionUtils.checkedAndroid_Q()) {
                 new PictureMediaScannerConnection(getContext(), mOutMediaFile.getAbsolutePath());
@@ -643,7 +644,7 @@ public class MDCustomCameraView extends RelativeLayout {
     public void fragmentUserVisibleHint(boolean isVisibleToUser){
         if (!isVisibleToUser) {
             stopVideoPlay();
-            resetState();
+            resetState(false); // fragment 隐藏的时候不删除原文件
         }
     }
 
@@ -657,7 +658,15 @@ public class MDCustomCameraView extends RelativeLayout {
         mCaptureLayout.setCameraType(isVideo ? BUTTON_STATE_ONLY_RECORDER : BUTTON_STATE_ONLY_CAPTURE);
         mCameraPreviewView.post(() -> {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mCameraPreviewView.getLayoutParams();
-            layoutParams.dimensionRatio = isVideo ? "9:16" : "3:4";
+            if (isVideo) {
+                layoutParams.height = 0;
+                layoutParams.dimensionRatio = "9:16";
+                layoutParams.setMargins(0, 0, 0, 0);
+            } else {
+                layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                layoutParams.setMargins(0, 0, 0, ScreenUtils.dip2px(mContext, 130f));
+                layoutParams.dimensionRatio = null;
+            }
         });
     }
 

@@ -15,4 +15,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
 
+    <ImageView
+        android:id="@+id/picture_md_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:src="@drawable/picture_icon_close" />
+
 </FrameLayout>
