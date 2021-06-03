@@ -132,8 +132,12 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
 
     fun dataChanged(selectData: List<LocalMedia>) {
         if (selectData.size>1){
-            mdBottomAdapter?.setNewData(selectData)
-            changeImageNumber(selectData)
+            val newSelectData = arrayListOf<LocalMedia>()
+            selectData.forEach {
+                newSelectData.add(it)
+            }
+            mdBottomAdapter?.setNewData(newSelectData)
+            changeImageNumber(newSelectData)
         }else {
             val newSelectData = arrayListOf<LocalMedia>()
             selectData.forEach {
