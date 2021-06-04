@@ -351,13 +351,13 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
                 }
                 dispatchCameraHandleResult(result);
                 // Solve some phone using Camera, DCIM will produce repetitive problems
-                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
-                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-                    if (lastImageId != -1) {
-                        Log.e("1111111111111111","删除前一张");
-                        MediaUtils.removeMedia(getContext(), lastImageId);
-                    }
-                }
+//                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
+//                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+//                    if (lastImageId != -1) {
+//                        Log.e("1111111111111111","删除前一张");
+//                        MediaUtils.removeMedia(getContext(), lastImageId);
+//                    }
+//                }
             }
         });
     }

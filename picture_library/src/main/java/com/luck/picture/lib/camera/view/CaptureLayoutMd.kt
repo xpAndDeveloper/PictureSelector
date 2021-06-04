@@ -76,6 +76,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
                 if (mIsMaxMedia) {
                     showPromptDialog(mContext.getString(R.string.picture_message_take_max_num, mIsMaxMediaNumber))
                 } else {
+//                    setButtonCaptureEnabled(false)
                     captureListener?.takePictures()
                 }
             }
@@ -124,8 +125,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
 
 
     fun setButtonCaptureEnabled(enabled: Boolean) {
-        val time: Long = if (enabled) 1000 else 0//避免下此拍照图片文件被删问题
-        mainHandler.postDelayed({ mView.flTakePhoto.isEnabled = enabled },time)
+        mView.flTakePhoto.isEnabled = enabled
     }
 
     // 拍照,视频完成保存后
