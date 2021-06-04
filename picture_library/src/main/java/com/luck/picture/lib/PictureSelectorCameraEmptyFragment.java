@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -353,6 +354,7 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
                 if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
                     int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
                     if (lastImageId != -1) {
+                        Log.e("1111111111111111","删除前一张");
                         MediaUtils.removeMedia(getContext(), lastImageId);
                     }
                 }

@@ -2,6 +2,8 @@ package com.luck.picture.lib.camera.view
 
 import android.content.Context
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import com.luck.picture.lib.camera.listener.ClickListener
 import com.luck.picture.lib.camera.listener.TypeListener
 import com.luck.picture.lib.dialog.PictureCustomDialog
 import kotlinx.android.synthetic.main.picture_capture_layout_md.view.*
+import java.util.*
 
 /**
  *Created by wanghai
@@ -30,8 +33,11 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     val STATE_RECORDERING = 0x004 //录制状态
     val STATE_BAN = 0x005 //禁止状态
 
+    var mainHandler: Handler = Handler(Looper.getMainLooper())
+
     private var recorded_time = 0  //记录当前录制的时间
     private var timer: RecordCountDownTimer? = null  //计时器
+    private var timer1s: Timer? = null  //计时器
     private val duration = 60 * 1000 //录制视频最大时间长度
     private var progress = 0f //录制视频的进度
     private val min_duration = CustomCameraView.DEFAULT_MIN_RECORD_VIDEO  //最短录制时间限制
@@ -65,6 +71,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
 
     private fun initView() {
         mView.run {
+            timer1s = Timer()
             flTakePhoto.setOnClickListener {
                 if (mIsMaxMedia) {
                     showPromptDialog(mContext.getString(R.string.picture_message_take_max_num, mIsMaxMediaNumber))
@@ -91,7 +98,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
         }
     }
 
-    private fun initCameraView(){
+    private fun initCameraView() {
         state = STATE_IDLE
         if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
             flTakePhoto.visibility = View.VISIBLE
@@ -110,21 +117,22 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
         }
     }
 
-    fun setCameraType(type: Int){
+    fun setCameraType(type: Int) {
         mCameraType = type
         typeListener?.cancel()
     }
 
 
     fun setButtonCaptureEnabled(enabled: Boolean) {
-        mView.flTakePhoto.isEnabled = enabled
+        val time: Long = if (enabled) 1000 else 0//避免下此拍照图片文件被删问题
+        mainHandler.postDelayed({ mView.flTakePhoto.isEnabled = enabled },time)
     }
 
     // 拍照,视频完成保存后
     fun startTypeBtnAnimator() {
         if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
             typeListener?.confirm()
-        } else if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_RECORDER){
+        } else if (mCameraType == MDCustomCameraView.BUTTON_STATE_ONLY_RECORDER) {
             // 也许以后视频要做不同的处理
             typeListener?.confirm()
         }
@@ -171,7 +179,7 @@ class CaptureLayoutMd(context: Context, attrs: AttributeSet?) : LinearLayout(con
     }
 
     // 是否达到了最大上限
-    fun isMaxMedia(isMaxMedia: Boolean, maxNumber: Int){
+    fun isMaxMedia(isMaxMedia: Boolean, maxNumber: Int) {
         this.mIsMaxMedia = isMaxMedia
         this.mIsMaxMediaNumber = maxNumber
     }
