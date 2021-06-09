@@ -77,8 +77,8 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
             mdBottomAdapter = PictureImageMDBottomAdapter(context = mContext, config = config, onMDBottomPhotoSelectChangedListener = OnMDBottomPhotoSelectChangedListener { item ->
                 item?.let {
                     // 点击 item 的删除按钮
-                    onPictureListener?.onItemRemove(it)
                     changeImageNumber(mdBottomAdapter?.data?: arrayListOf())
+                    onPictureListener?.onItemRemove(it)
                 }
             })
             val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(mdBottomAdapter)
