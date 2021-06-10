@@ -540,7 +540,7 @@ public final class PictureSelectionConfig implements Parcelable, Cloneable {
         filterMinFileSize = 0;
         recordVideoSecond = 60;
         recordVideoMinSecond = 0;
-        compressQuality = 100;
+        compressQuality = 90;
         imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;
         isCompress = true;
         isOriginalControl = false;
