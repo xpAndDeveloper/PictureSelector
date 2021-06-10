@@ -106,7 +106,9 @@ public class PictureSelectorCameraEmptyFragment extends PictureBaseFragment {
 
             @Override
             public void onItemRemove(@NotNull LocalMedia item) {
-
+                if (mCaptureLayout != null) {
+                    mCaptureLayout.isMaxMedia(mPictureBottomView.getData().size() >= config.maxSelectNum, config.maxSelectNum);
+                }
             }
         });
     }
