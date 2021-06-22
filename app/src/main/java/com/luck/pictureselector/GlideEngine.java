@@ -171,7 +171,6 @@ public class GlideEngine implements ImageEngine {
                         RoundedBitmapDrawable circularBitmapDrawable =
                                 RoundedBitmapDrawableFactory.
                                         create(context.getResources(), resource);
-                        circularBitmapDrawable.setCornerRadius(8);
                         imageView.setImageDrawable(circularBitmapDrawable);
                     }
                 });
@@ -218,7 +217,6 @@ public class GlideEngine implements ImageEngine {
                 .override(200, 200)
                 .centerCrop()
                 .skipMemoryCache(true)
-                .transform(new GlideRoundTransform(context))
                 .into(imageView);
     }
 
