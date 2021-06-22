@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
+import com.css.fontfamilylib.FontType
+import com.css.fontfamilylib.setFontFamily
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
@@ -97,6 +99,7 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
         viewPager.offscreenPageLimit = 3
         viewPager.adapter = initViewPagerAdapter()
         tabLayout.navigator = initCommonNavigator()
+        (( tabLayout.navigator as CommonNavigator).getPagerTitleView(0) as SimplePagerTitleView).setFontFamily(FontType.Medium)
         if (selectedNum != 0){
             llTabLayout.visibility = View.GONE
             viewPager.currentItem = 0
@@ -130,9 +133,14 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
                 simplePagerTitleView.text = titles[index]
                 simplePagerTitleView.width = UIUtil.dip2px(this@MDPhotoFragmentActivity, 80.0)
                 simplePagerTitleView.textSize = 16f
-                simplePagerTitleView.normalColor = Color.parseColor("#999999")
+                simplePagerTitleView.setFontFamily(FontType.Light)
+                simplePagerTitleView.normalColor = Color.parseColor("#909090")
                 simplePagerTitleView.selectedColor = Color.parseColor("#ffffff")
                 simplePagerTitleView.setOnClickListener {
+                    titles.forEachIndexed { index, s ->
+                        (commonNavigator.getPagerTitleView(index) as SimplePagerTitleView).setFontFamily(FontType.Light)
+                    }
+                    (commonNavigator.getPagerTitleView(index) as SimplePagerTitleView).setFontFamily(FontType.Medium)
                     tabLayout.onPageSelected(index)
                     commonNavigator.pagerIndicator.onPageScrolled(index, 0f, 0)
                     viewPager.currentItem = if (index > 1) 2 else index
@@ -151,10 +159,8 @@ class MDPhotoFragmentActivity : AppCompatActivity() {
                 val linePagerIndicator = LinePagerIndicator(context)
                 linePagerIndicator.setColors(Color.parseColor("#ffffff"))
                 linePagerIndicator.mode = LinePagerIndicator.MODE_EXACTLY
-                linePagerIndicator.endInterpolator = DecelerateInterpolator(1.6f)
-                linePagerIndicator.lineWidth = UIUtil.dip2px(context, 24.0).toFloat()
+                linePagerIndicator.lineWidth = UIUtil.dip2px(context, 26.0).toFloat()
                 linePagerIndicator.lineHeight = UIUtil.dip2px(context, 2.0).toFloat()
-                linePagerIndicator.roundRadius = UIUtil.dip2px(context, 2.0).toFloat()
 
                 return linePagerIndicator
             }
