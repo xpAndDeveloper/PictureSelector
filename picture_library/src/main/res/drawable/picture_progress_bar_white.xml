@@ -3,7 +3,6 @@
     <!-- 设置背景色 （白色） -->
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="4dp" />
             <solid android:color="#4DFFFFFF" />
         </shape>
     </item>
