@@ -70,9 +70,6 @@ class PictureMdBottomBarView(context: Context, attr: AttributeSet?) : RelativeLa
                 mView.findViewById<TextView>(R.id.bottom_desc).visibility = View.GONE
             }
 
-            val dividerItemDecoration = DividerItemDecoration(mContext, RecyclerView.HORIZONTAL)
-            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mContext, R.drawable.item_10)!!)
-            recyclerView.addItemDecoration(dividerItemDecoration)
             recyclerView.layoutManager = LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false)
             mdBottomAdapter = PictureImageMDBottomAdapter(context = mContext, config = config, onMDBottomPhotoSelectChangedListener = OnMDBottomPhotoSelectChangedListener { item ->
                 item?.let {

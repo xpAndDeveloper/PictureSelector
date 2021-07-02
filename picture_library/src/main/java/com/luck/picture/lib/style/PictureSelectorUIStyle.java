@@ -433,8 +433,8 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightTextColor = new int[]{Color.parseColor("#FFFFFF"), Color.parseColor("#FFFFFF")};
         uiStyle.picture_top_titleRightTextSize = 14;
         uiStyle.picture_top_titleTextSize = 18;
-        uiStyle.picture_top_titleArrowUpDrawable = R.drawable.picture_icon_arrow_up;
-        uiStyle.picture_top_titleArrowDownDrawable = R.drawable.picture_icon_arrow_down;
+        uiStyle.picture_top_titleArrowUpDrawable = R.drawable.icon_pack_up_ffffff;
+        uiStyle.picture_top_titleArrowDownDrawable = R.drawable.icon_unfold_ffffff;
         uiStyle.picture_top_titleTextColor = Color.parseColor("#FFFFFF");
         uiStyle.picture_top_titleBarBackgroundColor = Color.parseColor("#101010");
 
