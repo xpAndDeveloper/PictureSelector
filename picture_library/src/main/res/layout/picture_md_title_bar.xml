@@ -32,8 +32,9 @@
             android:maxEms="8"
             android:maxLines="1"
             android:text="@string/picture_camera_roll"
+            style="@style/BaseTextViewStyle.Medium"
             android:textColor="@color/picture_color_white"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/ivArrow"

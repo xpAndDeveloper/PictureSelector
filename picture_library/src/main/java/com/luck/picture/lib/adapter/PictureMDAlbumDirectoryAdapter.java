@@ -65,7 +65,7 @@ public class PictureMDAlbumDirectoryAdapter extends RecyclerView.Adapter<Picture
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        holder.itemView.setBackgroundResource(R.color.picture_color_black);
+        holder.itemView.setBackgroundResource(R.color.picture_color_101010);
         if (chooseMode == PictureMimeType.ofAudio()) {
             holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
         } else {
@@ -78,7 +78,8 @@ public class PictureMDAlbumDirectoryAdapter extends RecyclerView.Adapter<Picture
         String firstTitle = folder.getOfAllType() != -1 ? folder.getOfAllType() == PictureMimeType.ofAudio() ?
                 context.getString(R.string.picture_all_audio)
                 : context.getString(R.string.picture_camera_roll) : name;
-        holder.tvFolderName.setText(context.getString(R.string.picture_camera_roll_num, firstTitle, imageNum));
+        holder.tvFolderName.setText(firstTitle);
+        holder.tvFolderNum.setText(imageNum+"");
         holder.itemView.setOnClickListener(view -> {
             if (onAlbumItemClickListener != null) {
                 int size = folders.size();
@@ -100,13 +101,14 @@ public class PictureMDAlbumDirectoryAdapter extends RecyclerView.Adapter<Picture
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFirstImage;
-        TextView tvFolderName, tvSign;
+        TextView tvFolderName,tvFolderNum, tvSign;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
+            tvFolderNum = itemView.findViewById(R.id.tv_folder_num);
             tvSign = itemView.findViewById(R.id.tv_sign);
             if (PictureSelectionConfig.uiStyle != null) {
                 if (PictureSelectionConfig.uiStyle.picture_album_checkDotStyle != 0) {

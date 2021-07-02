@@ -98,7 +98,7 @@ public class MDFolderPopWindow extends PopupWindow {
 
     public void initView() {
         rootViewBg = window.findViewById(R.id.rootViewBg);
-        rootViewBg.setBackground(ContextCompat.getDrawable(context, R.color.picture_color_black));
+        rootViewBg.setBackground(ContextCompat.getDrawable(context, R.color.picture_color_101010));
         adapter = new PictureMDAlbumDirectoryAdapter(config);
         mRecyclerView = window.findViewById(R.id.folder_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));

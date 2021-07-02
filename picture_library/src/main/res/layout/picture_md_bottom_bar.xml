@@ -21,8 +21,9 @@
             android:enabled="false"
             android:layout_marginStart="20dp"
             android:gravity="center"
+            style="@style/BaseTextViewStyle.Light"
             android:text="@string/picture_des"
-            android:textColor="@color/picture_list_text_color"
+            android:textColor="@color/picture_color_white"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -33,17 +34,18 @@
             android:layout_centerVertical="true"
             android:layout_marginVertical="15dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/selector_shape_f54f76_ff5858_cccccc_22dp"
+            android:background="#EA637A"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/picture_tv_ok"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:enabled="false"
                 android:gravity="center"
                 android:paddingEnd="5dp"
                 android:text="@string/picture_please_select"
+                style="@style/BaseTextViewStyle.Regula"
                 android:textColor="@color/picture_color_white"
                 android:textSize="14sp"
                 tools:ignore="RtlSymmetry" />
@@ -54,9 +56,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:gravity="center"
+                style="@style/BaseTextViewStyle.Regula"
                 android:text="(0/9)"
                 android:textColor="@color/picture_color_white"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
 
         </LinearLayout>
@@ -67,7 +70,7 @@
     <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:layout_below="@+id/rl1"
         android:layout_marginTop="15dp"
         android:overScrollMode="never"

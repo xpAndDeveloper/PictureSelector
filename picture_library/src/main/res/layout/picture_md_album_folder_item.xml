@@ -31,9 +31,20 @@
         android:layout_marginStart="15dp"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/first_image"
-        android:text="@string/picture_camera_roll_num"
+        style="@style/BaseTextViewStyle.Medium"
         android:textColor="@color/picture_color_4d"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_folder_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/tv_folder_name"
+        style="@style/BaseTextViewStyle.Regula"
+        android:textColor="#909090"
+        android:textSize="14sp" />
 
     <View
         android:layout_alignStart="@+id/tv_folder_name"

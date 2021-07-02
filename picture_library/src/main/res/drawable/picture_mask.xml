@@ -6,7 +6,7 @@
     <solid android:color="@color/picture_color_transparent" />
     <stroke
         android:width="2dp"
-        android:color="#f54f76" />
+        android:color="#EA637A" />
     <size
         android:width="20dp"
         android:height="20dp" />
