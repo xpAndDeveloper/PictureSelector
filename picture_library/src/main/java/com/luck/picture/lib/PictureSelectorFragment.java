@@ -161,7 +161,7 @@ public class PictureSelectorFragment extends PictureBaseFragment implements View
         mRecyclerView = root.findViewById(R.id.picture_recycler);
         mPictureBottomView = root.findViewById(R.id.picture_bottom_view);
         mTvEmpty = root.findViewById(R.id.tv_empty);
-
+        mIvPictureLeftBack.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.picture_icon_close));
         if (config.isAutomaticTitleRecyclerTop) {
             mTitleBar.setOnClickListener(this);
         }

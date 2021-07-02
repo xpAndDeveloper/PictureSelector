@@ -372,9 +372,7 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
             if (PictureSelectionConfig.uiStyle.picture_top_titleTextSize != 0) {
                 tvTitle.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleTextSize);
             }
-            if (PictureSelectionConfig.uiStyle.picture_top_leftBack != 0) {
-                pictureLeftBack.setImageResource(PictureSelectionConfig.uiStyle.picture_top_leftBack);
-            }
+
             if (PictureSelectionConfig.uiStyle.picture_bottom_barBackgroundColor != 0) {
                 selectBarLayout.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_barBackgroundColor);
             }
@@ -427,9 +425,7 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
             if (PictureSelectionConfig.style.pictureTitleTextSize != 0) {
                 tvTitle.setTextSize(PictureSelectionConfig.style.pictureTitleTextSize);
             }
-            if (PictureSelectionConfig.style.pictureLeftBackIcon != 0) {
-                pictureLeftBack.setImageResource(PictureSelectionConfig.style.pictureLeftBackIcon);
-            }
+
             if (PictureSelectionConfig.style.picturePreviewBottomBgColor != 0) {
                 selectBarLayout.setBackgroundColor(PictureSelectionConfig.style.picturePreviewBottomBgColor);
             }
@@ -474,8 +470,6 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
             if (completeColorStateList != null) {
                 mTvPictureOk.setTextColor(completeColorStateList);
             }
-            Drawable leftDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_preview_leftBack_icon, R.drawable.picture_icon_back);
-            pictureLeftBack.setImageDrawable(leftDrawable);
 
             int titleColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_ac_preview_title_textColor);
             if (titleColor != 0) {
