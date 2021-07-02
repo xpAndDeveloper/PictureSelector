@@ -66,7 +66,7 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
     protected int selectedNum = 0;
     protected PictureSimpleFragmentAdapter adapter;
     protected Animation animation;
-    protected TextView check;
+    protected TextView check,checkText;
     protected View btnCheck;
     protected boolean refresh;
     protected int index;
@@ -124,6 +124,7 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
         mPicturePreview = findViewById(R.id.picture_id_preview);
         btnCheck = findViewById(R.id.btnCheck);
         check = findViewById(R.id.check);
+        checkText = findViewById(R.id.checkText);
         pictureLeftBack.setOnClickListener(this);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
@@ -138,6 +139,7 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
         mTvPictureRight.setVisibility(View.GONE);
 
         check.setVisibility(View.VISIBLE);
+        checkText.setVisibility(View.VISIBLE);
         btnCheck.setVisibility(View.VISIBLE);
 
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
@@ -518,7 +520,13 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
                 if (positionOffsetPixels < screenWidth / 2) {
                     media = adapter.getItem(position);
                     if (media != null) {
-                        check.setSelected(isSelected(media));
+                        boolean  isSelected = isSelected(media);
+                        check.setSelected(isSelected);
+                        if (isSelected){
+                            checkText.setTextColor(0xFFEA637A);
+                        }else {
+                            checkText.setTextColor(0xFFFFFFFF);
+                        }
                         if (config.isWeChatStyle) {
                             onUpdateSelectedChange(media);
                         } else {
@@ -533,7 +541,13 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
                 } else {
                     media = adapter.getItem(position + 1);
                     if (media != null) {
-                        check.setSelected(isSelected(media));
+                        boolean  isSelected = isSelected(media);
+                        check.setSelected(isSelected);
+                        if (isSelected){
+                            checkText.setTextColor(0xFFEA637A);
+                        }else {
+                            checkText.setTextColor(0xFFFFFFFF);
+                        }
                         if (config.isWeChatStyle) {
                             onUpdateSelectedChange(media);
                         } else {
@@ -632,10 +646,17 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
         if (adapter.getSize() > 0) {
             LocalMedia media = adapter.getItem(position);
             if (media != null) {
-                check.setSelected(isSelected(media));
+                boolean  isSelected = isSelected(media);
+                check.setSelected(isSelected);
+                if (isSelected){
+                    checkText.setTextColor(0xFFEA637A);
+                }else {
+                    checkText.setTextColor(0xFFFFFFFF);
+                }
             }
         } else {
             check.setSelected(false);
+            checkText.setTextColor(0xFFFFFFFF);
         }
     }
 
@@ -842,10 +863,12 @@ public class MDPicturePreviewActivity extends PictureBaseActivity implements
             if (!check.isSelected()) {
                 isChecked = true;
                 check.setSelected(true);
+                checkText.setTextColor(0xFFEA637A);
                 check.startAnimation(animation);
             } else {
                 isChecked = false;
                 check.setSelected(false);
+                checkText.setTextColor(0xFFFFFFFF);
             }
             isChangeSelectedData = true;
             if (isChecked) {

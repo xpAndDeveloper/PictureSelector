@@ -5,7 +5,7 @@
     android:background="@color/picture_color_black"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/picture_title_bar" />
+    <include layout="@layout/picture_md_title_bar" />
 
 
     <include layout="@layout/picture_bottom_bar" />
